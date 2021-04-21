@@ -1,53 +1,56 @@
 
 package units;
 
+/**
+ * Base class for all units in the game.
+ * 
+ * Each unit has a position, belongs to a nation, and has a type. All units have
+ * a method to move, attack, and defend.
+ * 
+ * @author Joseph Shimel
+ */
 public abstract class Unit {
-	private String nation;
-	private int posX, posY;
-	private final UnitType type;
+	private String nationName;
+	private final double attackPoints;
+	private final double defensePoints;
+	private final int movesPerTurn;
 
-	public Unit(String nation, int posX, int posY, UnitType type) {
-		this.nation = nation;
-		this.posX = posX;
-		this.posY = posY;
-		this.type = type;
+	/**
+	 * Constructor for a unit
+	 * 
+	 * Should only be called by subclasses. Takes in a nation name and some stats
+	 * for the unit.
+	 * 
+	 * @param nationName    Name of the nation the unit belongs to
+	 * @param attackPoints  How many attack points each unit does per turn
+	 * @param defensePoints How much defense each unit has
+	 * @param movesPerTurn  How many tiles each unit can move per turn
+	 */
+	public Unit(String nationName, double attackPoints, double defensePoints, int movesPerTurn) {
+		this.nationName = nationName;
+		this.attackPoints = attackPoints;
+		this.defensePoints = defensePoints;
+		this.movesPerTurn = movesPerTurn;
 	}
 
-	// Called when unit needs to move to a new tile
-	public abstract void move(int x, int y);
-
-	// Called when the unit will attack another tile
-	public abstract void attack(int x, int y);
-
-	// Called when unit defends
-	public abstract void defend();
-
-	public String getNation() {
-		return nation;
+	public String getNationName() {
+		return nationName;
 	}
 
-	public void setNation(String nation) {
-		this.nation = nation;
+	public void setNationName(String nationName) {
+		this.nationName = nationName;
 	}
 
-	public int getPosX() {
-		return posX;
+	public double getAttackPoints() {
+		return attackPoints;
 	}
 
-	public void setPosX(int posX) {
-		this.posX = posX;
+	public double getDefensePoints() {
+		return defensePoints;
 	}
 
-	public int getPosY() {
-		return posY;
-	}
-
-	public void setPosY(int posY) {
-		this.posY = posY;
-	}
-
-	public UnitType getType() {
-		return type;
+	public int getMovesPerTurn() {
+		return movesPerTurn;
 	}
 
 }
