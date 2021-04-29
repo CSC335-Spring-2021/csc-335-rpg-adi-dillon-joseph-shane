@@ -26,10 +26,10 @@ public class RPGView extends Application implements Observer {
 		backgroundRectangles = new Rectangle[16][12];
 
 		gridPane = new GridPane();
-		for (int x = 0; x < 16; x++) {
-			for (int y = 0; y < 12; y++) {
+		for (int x = 0; x < 10; x++) {
+			for (int y = 0; y < 10; y++) {
 				StackPane stackPane = new StackPane();
-				Rectangle rect = new Rectangle(40, 40);
+				Rectangle rect = new Rectangle(64, 64);
 				Rectangle background = new Rectangle(40, 40);
 				background.setFill(Color.BLACK);
 				switch ((int) (Math.random() * 5)) {
