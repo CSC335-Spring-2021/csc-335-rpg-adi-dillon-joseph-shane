@@ -4,6 +4,7 @@ import java.util.Observer;
 
 import model.Model;
 import model.Tile;
+import units.Unit;
 
 @SuppressWarnings("deprecation")
 public class RPGController {
@@ -16,27 +17,28 @@ public class RPGController {
 	public void moveUnit(int fromCol, int fromRow, int toCol, int toRow) {
 		final Tile fromTile = model.getTileAt(fromRow, fromCol);
 		final Tile toTile = model.getTileAt(toRow, toCol);
+		final Unit fromUnit = fromTile.getUnit();
+		final Unit toUnit = toTile.getUnit();
 
-		if (fromTile.getUnit().getNation() != model.getCurrentTurn()) {
-			// Exception: Must move one of your own pieces, ignore
-		} else if (toTile.getUnit() != null) {
-			// another unit is already in destination
+		if (fromUnit.getNation() != model.getCurrentTurn()) {
+			return; // Must move one of own pieces, ignore this
+		} else if (toUnit != null) {
 			if(toTile.getNation() == model.getCurrentTurn()) {
-				// Cannot attack own pieces, ignore
+				return; // Cannot attack own pieces
 			} else {
-				// Attack other piece, end turn
+				toUnit.setHealth(toUnit.getHealth() - fromUnit.getAttackPoints() / toUnit.getDefensePoints());
 			}
 		} else { // Normal unit movement
 			// Check model turn
 			if(model.getCurrentTurn().movesLeft == -1) {
-				model.getCurrentTurn().movesLeft = fromTile.getUnit().getMovesPerTurn();
+				model.getCurrentTurn().movesLeft = fromUnit.getMovesPerTurn();
 			}
-			toTile.setUnit(fromTile.getUnit());
+			toTile.setUnit(fromUnit);
 			fromTile.setUnit(null);
 			toTile.setNation(model.getCurrentTurn());
 			model.getCurrentTurn().movesLeft--;
 			if(model.getCurrentTurn().movesLeft == 0) {
-				// end turn
+				model.endTurn();
 			}
 		}
 	}

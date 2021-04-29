@@ -13,7 +13,7 @@ import model.Nation;
  */
 public abstract class Unit {
 	private Nation nation;
-	private int health;
+	private double health;
 	private final double attackPoints;
 	private final double defensePoints;
 	private final int movesPerTurn;
@@ -41,15 +41,15 @@ public abstract class Unit {
 		return nation;
 	}
 
-	public void setHealth(int health) {
-		this.health = health;
+	public void setHealth(double d) {
+		this.health = d;
 	}
 
 	public void setNation(Nation nation) {
 		this.nation = nation;
 	}
 
-	public int getHealth() {
+	public double getHealth() {
 		return this.health;
 	}
 
