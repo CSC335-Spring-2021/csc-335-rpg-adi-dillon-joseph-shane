@@ -20,8 +20,13 @@ public class RPGController {
 		final Unit fromUnit = fromTile.getUnit();
 		final Unit toUnit = toTile.getUnit();
 
+		int moveLength = Math.abs(fromCol - toCol) + Math.abs(fromRow - toRow);
+		// Move length is too large, ignore move
+		if (model.getCurrentTurn().movesLeft >= moveLength) {
+			return;
+		}
 		// Unit moved not own unit, ignore
-		if (fromUnit.getNation() != model.getCurrentTurn()) {
+		else if (fromUnit.getNation() != model.getCurrentTurn()) {
 			return;
 		}
 		// Unit moved to another unit, attack or ignore
@@ -34,15 +39,16 @@ public class RPGController {
 		}
 		// Normal unit movement
 		else {
-			// Check model turn
+			// Check model moves
 			if (model.getCurrentTurn().movesLeft == -1) {
 				model.getCurrentTurn().movesLeft = fromUnit.getMovesPerTurn();
 			}
+
 			// Move unit
 			toTile.setUnit(fromUnit);
 			fromTile.setUnit(null);
 			toTile.setNation(model.getCurrentTurn());
-			model.getCurrentTurn().movesLeft--;
+			model.getCurrentTurn().movesLeft -= moveLength;
 			// Check if turn is over
 			if (model.getCurrentTurn().movesLeft == 0) {
 				model.endTurn();
