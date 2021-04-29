@@ -1,5 +1,8 @@
 package view;
 
+import java.util.Observable;
+import java.util.Observer;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
@@ -10,7 +13,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-public class RPGView extends Application {
+@SuppressWarnings("deprecation")
+public class RPGView extends Application implements Observer {
 	private int mouseX = -1, mouseY = -1;
 	Rectangle[][] backgroundRectangles;
 	GridPane gridPane;
@@ -74,6 +78,17 @@ public class RPGView extends Application {
 			this.mouseY = mouseY;
 			backgroundRectangles[this.mouseX][this.mouseY].setFill(Color.WHITE);
 		}
+	}
+
+	/**
+	 * This method is called when the game model is updated
+	 * 
+	 * Calls a constructor method to rebuild the tile map to reflect the new game
+	 * state
+	 */
+	@Override
+	public void update(Observable o, Object arg) {
+
 	}
 
 }

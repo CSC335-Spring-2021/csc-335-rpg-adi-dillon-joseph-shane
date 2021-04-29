@@ -1,13 +1,18 @@
 package model;
 
-public class Model {
+import java.util.Observable;
+import java.util.Observer;
+
+@SuppressWarnings("deprecation")
+public class Model extends Observable {
 
 	private Tile[][] map;
 	private int mapSize;
 	
-	public Model() {
+	public Model(Observer view) {
 		// Create a 10x10 map where every tile
 		// has no nation affiliation and is dry land
+		this.addObserver(view);
 		this.mapSize = 10;
 		this.map = new Tile[mapSize][mapSize];
 		for(int i=0; i< mapSize; i++) {
