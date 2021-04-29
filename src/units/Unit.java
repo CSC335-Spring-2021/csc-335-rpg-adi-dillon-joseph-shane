@@ -1,6 +1,8 @@
 
 package units;
 
+import model.Nation;
+
 /**
  * Base class for all units in the game.
  * 
@@ -10,7 +12,8 @@ package units;
  * @author Joseph Shimel
  */
 public abstract class Unit {
-	private String nationName;
+	private Nation nation;
+	private double health;
 	private final double attackPoints;
 	private final double defensePoints;
 	private final int movesPerTurn;
@@ -26,31 +29,40 @@ public abstract class Unit {
 	 * @param defensePoints How much defense each unit has
 	 * @param movesPerTurn  How many tiles each unit can move per turn
 	 */
-	public Unit(String nationName, double attackPoints, double defensePoints, int movesPerTurn) {
-		this.nationName = nationName;
+	public Unit(Nation nation, double attackPoints, double defensePoints, int movesPerTurn) {
+		this.nation = nation;
+		this.health = 100;
 		this.attackPoints = attackPoints;
 		this.defensePoints = defensePoints;
 		this.movesPerTurn = movesPerTurn;
 	}
 
-	public String getNationName() {
-		return nationName;
+	public Nation getNation() {
+		return nation;
 	}
 
-	public void setNationName(String nationName) {
-		this.nationName = nationName;
+	public void setHealth(double d) {
+		this.health = d;
+	}
+
+	public void setNation(Nation nation) {
+		this.nation = nation;
+	}
+
+	public double getHealth() {
+		return this.health;
 	}
 
 	public double getAttackPoints() {
-		return attackPoints;
+		return this.attackPoints;
 	}
 
 	public double getDefensePoints() {
-		return defensePoints;
+		return this.defensePoints;
 	}
 
 	public int getMovesPerTurn() {
-		return movesPerTurn;
+		return this.movesPerTurn;
 	}
 
 }
