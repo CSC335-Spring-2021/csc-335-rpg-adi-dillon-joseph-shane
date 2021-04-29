@@ -3,6 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
+import city.City;
 import units.Unit;
 
 public class Tile {
@@ -41,7 +42,7 @@ public class Tile {
 		return this.nation;
 	}
 	
-	public void getCity() {
+	public City getCity() {
 		return this.city;
 	}
 	
