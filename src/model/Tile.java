@@ -1,8 +1,5 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import city.City;
 import units.Unit;
 
@@ -10,19 +7,19 @@ public class Tile {
 
 	public static final String DRY_LAND = "dry_land";
 	public static final String WATER = "water";
-	private String nation;
+	private Nation nation;
 	private String landType;
 	private Unit unit;
 	private City city;
 	
-	public Tile(String nation, String landType) {
+	public Tile(Nation nation, String landType) {
 		this.nation= nation;
 		this.landType = landType;
 		this.unit = null;
 		this.city = null;
 	}
 	
-	public void setNation(String nation) {
+	public void setNation(Nation nation) {
 		this.nation = nation;
 	}
 	
@@ -38,7 +35,7 @@ public class Tile {
 		this.unit = unit;
 	}
 	
-	public String getNation() {
+	public Nation getNation() {
 		return this.nation;
 	}
 	
