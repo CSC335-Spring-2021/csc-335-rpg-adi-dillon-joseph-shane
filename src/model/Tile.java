@@ -12,13 +12,13 @@ public class Tile {
 	public static final String WATER = "water";
 	private String nation;
 	private String landType;
-	private List<Unit> units;
+	private Unit unit;
 	private City city;
 	
 	public Tile(String nation, String landType) {
 		this.nation= nation;
 		this.landType = landType;
-		this.units = new ArrayList<Unit>();
+		this.unit = null;
 		this.city = null;
 	}
 	
@@ -34,8 +34,8 @@ public class Tile {
 		this.city = city;
 	}
 	
-	public void addUnit(Unit unit) {
-		this.units.add(unit);
+	public void setUnit(Unit unit) {
+		this.unit = unit;
 	}
 	
 	public String getNation() {
@@ -50,7 +50,7 @@ public class Tile {
 		return this.landType;
 	}
 	
-	public List<Unit> getUnits(){
-		return this.units;
+	public Unit getUnit(){
+		return this.unit;
 	}
 }
