@@ -20,24 +20,31 @@ public class RPGController {
 		final Unit fromUnit = fromTile.getUnit();
 		final Unit toUnit = toTile.getUnit();
 
+		// Unit moved not own unit, ignore
 		if (fromUnit.getNation() != model.getCurrentTurn()) {
-			return; // Must move one of own pieces, ignore this
-		} else if (toUnit != null) {
-			if(toTile.getNation() == model.getCurrentTurn()) {
+			return;
+		}
+		// Unit moved to another unit, attack or ignore
+		else if (toUnit != null) {
+			if (toTile.getNation() == model.getCurrentTurn()) {
 				return; // Cannot attack own pieces
 			} else {
 				toUnit.setHealth(toUnit.getHealth() - fromUnit.getAttackPoints() / toUnit.getDefensePoints());
 			}
-		} else { // Normal unit movement
+		}
+		// Normal unit movement
+		else {
 			// Check model turn
-			if(model.getCurrentTurn().movesLeft == -1) {
+			if (model.getCurrentTurn().movesLeft == -1) {
 				model.getCurrentTurn().movesLeft = fromUnit.getMovesPerTurn();
 			}
+			// Move unit
 			toTile.setUnit(fromUnit);
 			fromTile.setUnit(null);
 			toTile.setNation(model.getCurrentTurn());
 			model.getCurrentTurn().movesLeft--;
-			if(model.getCurrentTurn().movesLeft == 0) {
+			// Check if turn is over
+			if (model.getCurrentTurn().movesLeft == 0) {
 				model.endTurn();
 			}
 		}
