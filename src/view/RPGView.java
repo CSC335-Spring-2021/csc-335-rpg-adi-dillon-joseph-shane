@@ -107,10 +107,9 @@ public class RPGView extends Application implements Observer {
 	}
 
 	private void gridClicked(MouseEvent event) {
-		int mouseX = (int) ((event.getSceneX()) / 42.0);
-		int mouseY = (int) ((event.getSceneY()) / 42.0);
-		
-		Tile tile = this.controller.getTile(mouseX, mouseY);
+		System.out.println(event.getSceneX());
+		int mouseX = (int) ((event.getSceneX()) / 40 );
+		int mouseY = (int) ((event.getSceneY()) / 40);
 		
 		
 		if (this.mouseX != -1 && this.mouseY != -1) {
