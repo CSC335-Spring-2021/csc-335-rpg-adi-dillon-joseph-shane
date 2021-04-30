@@ -107,7 +107,10 @@ public class RPGView extends Application implements Observer {
 	}
 
 	private void gridClicked(MouseEvent event) {
-		System.out.println(event.getSceneX());
+		// When we get here, we can use turnOption to see what the user
+		// wants to do. Based on that we can let them build on this rectangle,
+		//or prompt them to choose another rectangle
+		
 		int mouseX = (int) ((event.getSceneX()) / 40 );
 		int mouseY = (int) ((event.getSceneY()) / 40);
 		
