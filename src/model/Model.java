@@ -3,7 +3,8 @@ package model;
 import java.util.Observable;
 import java.util.Observer;
 
-import units.TestUnit;
+import units.FootSoldier;
+import units.Settler;
 
 @SuppressWarnings("deprecation")
 public class Model extends Observable {
@@ -41,8 +42,8 @@ public class Model extends Observable {
 				}
 			}
 		}
-		this.map[0][0].setUnit(new TestUnit(blueNation));
-		this.map[6][4].setUnit(new TestUnit(redNation));
+		this.map[0][0].setUnit(new FootSoldier(blueNation));
+		this.map[6][4].setUnit(new Settler(redNation));
 	}
 
 	public Tile getTileAt(int row, int col) {

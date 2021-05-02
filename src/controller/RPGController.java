@@ -48,6 +48,7 @@ public class RPGController {
 				model.endTurn();
 				return false; // Cannot attack own pieces
 			} else {
+				// health -= attack / defense
 				toUnit.setHealth(toUnit.getHealth() - fromUnit.getAttackPoints() / toUnit.getDefensePoints());
 				System.out.println(toUnit.getHealth());
 				// Unit is killed
