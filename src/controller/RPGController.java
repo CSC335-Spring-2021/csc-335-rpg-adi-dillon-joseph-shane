@@ -14,7 +14,7 @@ public class RPGController {
 		model = new Model(view);
 	}
 
-	public void moveUnit(int fromCol, int fromRow, int toCol, int toRow) {
+	public boolean moveUnit(int fromCol, int fromRow, int toCol, int toRow) {
 		final Tile fromTile = model.getTileAt(fromRow, fromCol);
 		final Tile toTile = model.getTileAt(toRow, toCol);
 		final Unit fromUnit = fromTile.getUnit();
@@ -23,18 +23,21 @@ public class RPGController {
 		int moveLength = Math.abs(fromCol - toCol) + Math.abs(fromRow - toRow);
 		// Move length is too large, ignore move
 		if (model.getCurrentTurn().movesLeft >= moveLength) {
-			return;
+			return false;
 		}
 		// Unit moved not own unit, ignore
 		else if (fromUnit.getNation() != model.getCurrentTurn()) {
-			return;
+			return false;
 		}
 		// Unit moved to another unit, attack or ignore
 		else if (toUnit != null) {
 			if (toTile.getNation() == model.getCurrentTurn()) {
-				return; // Cannot attack own pieces
+				this.model.updateView();
+				return true; // Cannot attack own pieces
 			} else {
 				toUnit.setHealth(toUnit.getHealth() - fromUnit.getAttackPoints() / toUnit.getDefensePoints());
+				this.model.updateView();
+				return true;
 			}
 		}
 		// Normal unit movement
@@ -53,10 +56,16 @@ public class RPGController {
 			if (model.getCurrentTurn().movesLeft == 0) {
 				model.endTurn();
 			}
+			this.model.updateView();
+			return true;
 		}
 	}
 
 	public Tile getTile(int col, int row) {
 		return model.getTileAt(row, col);
+	}
+	
+	public void updateView() {
+		this.model.updateView();
 	}
 }
