@@ -13,12 +13,12 @@ public class RPGController {
 	public RPGController(Observer view) {
 		model = new Model(view);
 	}
-	
+
 	public boolean selectUnit(int col, int row) {
 		final Unit selectedUnit = model.getTileAt(row, col).getUnit();
-		if(selectedUnit == null) {
+		if (selectedUnit == null) {
 			return false;
-		} else if(selectedUnit.getNation() != model.getCurrentTurn()) {
+		} else if (selectedUnit.getNation() != model.getCurrentTurn()) {
 			return false;
 		} else {
 			model.getCurrentTurn().movesLeft = selectedUnit.getMovesPerTurn();
@@ -44,21 +44,25 @@ public class RPGController {
 		}
 		// Unit moved to another unit, attack or ignore
 		else if (toUnit != null) {
-			if (toTile.getNation() == model.getCurrentTurn()) {
-				model.endTurn();
-				return false; // Cannot attack own pieces
-			} else {
-				// health -= attack / defense
-				toUnit.setHealth(toUnit.getHealth() - fromUnit.getAttackPoints() / toUnit.getDefensePoints());
-				System.out.println(toUnit.getHealth());
-				// Unit is killed
-				if (toUnit.getHealth() <= 0) {
-					toTile.setUnit(null);
+			if (fromUnit.getAttackRange() >= moveLength) {
+				if (toTile.getNation() == model.getCurrentTurn()) {
+					model.endTurn();
+					return false; // Cannot attack own pieces
+				} else {
+					toUnit.setHealth(toUnit.getHealth() - fromUnit.getAttackPoints() / toUnit.getDefensePoints());
+					System.out.println(toUnit.getHealth());
+					// Unit is killed
+					if (toUnit.getHealth() <= 0) {
+						toTile.setUnit(null);
+					}
+					model.endTurn();
+					this.model.updateView();
+					return true;
 				}
-				model.endTurn();
-				this.model.updateView();
-				return true;
+			}else {
+				return false;
 			}
+
 		}
 		// Normal unit movement
 		else {
@@ -75,7 +79,7 @@ public class RPGController {
 	public Tile getTile(int col, int row) {
 		return model.getTileAt(row, col);
 	}
-	
+
 	public void updateView() {
 		this.model.updateView();
 	}
