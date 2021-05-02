@@ -2,8 +2,11 @@ package controller;
 
 import java.util.Observer;
 
+import city.City;
 import model.Model;
+import model.Nation;
 import model.Tile;
+import units.Settler;
 import units.Unit;
 
 @SuppressWarnings("deprecation")
@@ -24,6 +27,24 @@ public class RPGController {
 			model.getCurrentTurn().movesLeft = selectedUnit.getMovesPerTurn();
 			return true;
 		}
+	}
+
+	public void buildCity(int col, int row) {
+		Tile tile = this.model.getTileAt(row, col);
+		Nation currentTurn = model.getCurrentTurn();
+
+		tile.setUnit(null); // Remove the settler
+		tile.setNation(currentTurn); // Land now belongs to current turn user
+		City city = new City(currentTurn.name + " city", 0, currentTurn);
+		tile.setCity(city);
+		model.endTurn();
+		this.model.updateView();
+	}
+
+	public boolean canBuildCity(int col, int row) {
+		Tile tile = this.model.getTileAt(row, col);
+		return tile.getLandType().equals(Tile.DRY_LAND) && tile.getUnit() instanceof Settler
+				&& tile.getNation() == null;
 	}
 
 	public boolean moveUnit(int fromCol, int fromRow, int toCol, int toRow) {
@@ -59,7 +80,7 @@ public class RPGController {
 					this.model.updateView();
 					return true;
 				}
-			}else {
+			} else {
 				return false;
 			}
 

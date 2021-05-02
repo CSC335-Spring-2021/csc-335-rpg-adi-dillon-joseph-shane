@@ -1,21 +1,39 @@
 package city;
 
+import javafx.scene.image.Image;
+import model.Model;
+import model.Nation;
+
 public class City {
 	
 	private String cityName;
 	private int revenue;
-	private String nation;
+	private Nation nation;
+	private final Image sprite;
 	
 	public City() {
 		cityName = "";
 		revenue = 0;
-		nation = "";
+		nation = null;
+		sprite = null;
 	}
 	
-	public City(String name, int money, String name2) {
-		cityName = name;
-		revenue = money;
-		nation = name2;
+	public City(String name, int money, Nation nation) {
+		this.cityName = name;
+		this.revenue = money;
+		this.nation = nation;
+		
+		String cityNationName = this.nation.name;
+		if(cityNationName.equals(Model.BLUE_NATION.name)) {
+			this.sprite = new Image("/res/blue_nation_city.png", 40, 40, false, false);
+		}else {
+			this.sprite = new Image("/res/red_nation_city.png", 40, 40, false, false);
+		}
+		
+	}
+	
+	public Image getSprite() {
+		return this.sprite;
 	}
 	
 	public void setName(String name) {
@@ -26,8 +44,8 @@ public class City {
 		revenue = money;
 	}
 	
-	public void setNation(String name) {
-		nation = name;
+	public void setNation(Nation nation) {
+		this.nation = nation;
 	}
 	
 	public String getName() {
@@ -38,7 +56,7 @@ public class City {
 		return revenue;
 	}
 	
-	public String getNation() {
+	public Nation getNation() {
 		return nation;
 	}
 	
