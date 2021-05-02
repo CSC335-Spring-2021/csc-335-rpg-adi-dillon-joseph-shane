@@ -47,6 +47,21 @@ public class RPGController {
 				&& tile.getNation() == null;
 	}
 
+	public boolean canAddUnit(int col, int row) {
+		Tile tile = this.model.getTileAt(row, col);
+		return this.model.getCurrentTurn().name.equals(tile.getNation().name)
+				&& this.model.getTileAt(row, col).getCity() != null;
+	}
+	
+	public void addUnit(int col, int row) {
+		Tile tile = this.model.getTileAt(row, col);
+		if(tile.getUnit() == null) {
+			tile.setUnit(new Settler(this.model.getCurrentTurn()));
+			model.endTurn();
+			this.model.updateView();
+		}
+	}
+
 	public boolean moveUnit(int fromCol, int fromRow, int toCol, int toRow) {
 		final Tile fromTile = model.getTileAt(fromRow, fromCol);
 		final Tile toTile = model.getTileAt(toRow, toCol);
