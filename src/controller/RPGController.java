@@ -6,6 +6,8 @@ import city.City;
 import model.Model;
 import model.Nation;
 import model.Tile;
+import units.Archer;
+import units.FootSoldier;
 import units.Settler;
 import units.Unit;
 
@@ -49,14 +51,22 @@ public class RPGController {
 
 	public boolean canAddUnit(int col, int row) {
 		Tile tile = this.model.getTileAt(row, col);
-		return this.model.getCurrentTurn().name.equals(tile.getNation().name)
+		String tileNation = tile.getNation() == null? "" : tile.getNation().name;
+		return this.model.getCurrentTurn().name.equals(tileNation)
 				&& this.model.getTileAt(row, col).getCity() != null;
 	}
-	
-	public void addUnit(int col, int row) {
+
+	public void addUnit(int col, int row, String type) {
 		Tile tile = this.model.getTileAt(row, col);
-		if(tile.getUnit() == null) {
-			tile.setUnit(new Settler(this.model.getCurrentTurn()));
+		if (tile.getUnit() == null) {
+
+			if (type.equals("settler")) {
+				tile.setUnit(new Settler(this.model.getCurrentTurn()));
+			}else if(type.equals("foot_soilder")) {
+				tile.setUnit(new FootSoldier(this.model.getCurrentTurn()));
+			}else if(type.equals("archer")) {
+				tile.setUnit(new Archer(this.model.getCurrentTurn()));
+			}
 			model.endTurn();
 			this.model.updateView();
 		}

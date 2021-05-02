@@ -29,6 +29,8 @@ import units.Unit;
 
 @SuppressWarnings("deprecation")
 public class RPGView extends Application implements Observer {
+	private Stage stage;
+	private BorderPane root;
 	private int mouseX = -1, mouseY = -1;
 	private RPGController controller;
 	private Rectangle[][] backgroundRectangles;
@@ -42,11 +44,12 @@ public class RPGView extends Application implements Observer {
 	public void start(Stage stage) throws Exception {
 		// Create the controller this view is based on
 		this.controller = new RPGController(this);
+		this.stage = stage;
 
 		// Create the borderpane and a set of grids inside it
 		// We don't care what color each rectangle is, yet
 		// That will be updated by the model soon
-		BorderPane root = new BorderPane();
+		this.root = new BorderPane();
 		root.setStyle("-fx-background-color: black;");
 		backgroundRectangles = new Rectangle[Model.MAP_SIZE][Model.MAP_SIZE];
 		unitImages = new ImageView[Model.MAP_SIZE][Model.MAP_SIZE];
@@ -130,7 +133,7 @@ public class RPGView extends Application implements Observer {
 				Alert alert = new Alert(AlertType.CONFIRMATION, "Do you want to adda unit?", addUnit, cancel);
 				alert.showAndWait().ifPresent(response -> {
 					if(response.getText().equals("Add Unit")) {
-						this.controller.addUnit(mouseY, mouseX);
+						this.createOptionsBar(mouseY, mouseX);
 					}
 				});
 			}
@@ -140,6 +143,51 @@ public class RPGView extends Application implements Observer {
 				error.show();
 			}
 		}
+	}
+	
+	private void createOptionsBar(int mouseY, int mouseX) {
+		GridPane optionsBar = new GridPane();
+
+		for (int i = 0; i < 2; i++) {
+			ColumnConstraints colConstraint = new ColumnConstraints();
+			colConstraint.setPercentWidth(33.33);
+			colConstraint.setHalignment(HPos.CENTER);
+			optionsBar.getColumnConstraints().add(colConstraint);
+		}
+
+		Button addSettler = new Button();
+		addSettler.setText("Add Settler");
+		addSettler.setOnAction((event) -> {
+			this.controller.addUnit(mouseY, mouseX, "settler");
+			this.removeOptionsBar();
+		});
+		
+		Button addFootSoilder = new Button();
+		addFootSoilder.setText("Add Foot Soilder");
+		addFootSoilder.setOnAction((event) -> {
+			this.controller.addUnit(mouseY, mouseX, "foot_soilder");
+			this.removeOptionsBar();
+		});
+		
+		Button addArcher = new Button();
+		addArcher.setText("Add Archer");
+		addArcher.setOnAction((event) -> {
+			this.controller.addUnit(mouseY, mouseX, "archer");
+			this.removeOptionsBar();
+		});
+
+		optionsBar.add(addSettler, 0, 0);
+		optionsBar.add(addFootSoilder, 1, 0);
+		optionsBar.add(addArcher, 2, 0);
+		
+		this.root.setBottom(optionsBar);
+		this.stage.sizeToScene();
+
+	}
+	
+	private void removeOptionsBar() {
+		this.root.setBottom(null);
+		this.stage.sizeToScene();
 	}
 
 	/**
