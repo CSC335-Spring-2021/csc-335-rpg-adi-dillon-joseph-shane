@@ -18,6 +18,7 @@ public abstract class Unit {
 	private final double attackPoints;
 	private final double defensePoints;
 	private final int movesPerTurn;
+	private final int attackRange;
 	private final Image sprite;
 
 	/**
@@ -31,13 +32,14 @@ public abstract class Unit {
 	 * @param defensePoints How much defense each unit has
 	 * @param movesPerTurn  How many tiles each unit can move per turn
 	 */
-	public Unit(Nation nation, double attackPoints, double defensePoints, int movesPerTurn, Image sprite) {
+	public Unit(Nation nation, double attackPoints, double defensePoints, int movesPerTurn, int attackRange, Image sprite) {
 		this.nation = nation;
 		this.health = 100;
 		this.attackPoints = attackPoints;
 		this.defensePoints = defensePoints;
 		this.movesPerTurn = movesPerTurn;
 		this.sprite = sprite;
+		this.attackRange = attackRange;
 	}
 
 	public Nation getNation() {
@@ -66,6 +68,10 @@ public abstract class Unit {
 
 	public int getMovesPerTurn() {
 		return this.movesPerTurn;
+	}
+	
+	public int getAttackRange() {
+		return this.attackRange;
 	}
 	
 	public Image getSprite() {
