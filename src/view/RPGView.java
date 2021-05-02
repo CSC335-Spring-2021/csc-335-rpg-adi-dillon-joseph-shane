@@ -92,6 +92,7 @@ public class RPGView extends Application implements Observer {
 		// We can tell the controller to tell the map to
 		// update the view
 		this.controller.updateView();
+		this.controller.takeTurn();
 
 		stage.show(); // Show the stage
 	}

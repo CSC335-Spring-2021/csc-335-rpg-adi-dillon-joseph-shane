@@ -11,7 +11,7 @@ public class Model extends Observable {
 
 	private Tile[][] map;
 	public static final int MAP_SIZE = 15;
-	public static final Nation BLUE_NATION = new Nation("Blue Nation", true);
+	public static final Nation BLUE_NATION = new Nation("Blue Nation", false);
 	public static final Nation RED_NATION = new Nation("Red Nation", true);
 	private Nation currentTurn;
 
@@ -45,9 +45,8 @@ public class Model extends Observable {
 				}
 			}
 		}
-		this.map[0][0].setUnit(new FootSoldier(BLUE_NATION));
-		this.map[6][4].setUnit(new Settler(RED_NATION));
-		currentTurn.takeTurn();
+		this.map[0][0].setUnit(new FootSoldier(0, 0, BLUE_NATION));
+		this.map[6][4].setUnit(new Settler(6, 4, RED_NATION));
 	}
 
 	public Tile getTileAt(int row, int col) {

@@ -1,25 +1,28 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import units.Unit;
+
 public class Nation {
 	public String name;
 	public int movesLeft;
 	public Nation enemyNation;
 	private final boolean isAI;
+	private final ArrayList<Unit> units;
 
 	public Nation(String name, boolean isAI) {
 		this.name = name;
 		this.isAI = isAI;
+		this.units = new ArrayList<>();
 	}
 
-	public void takeTurn() {
-		if (!isAI) {
-			return;
-		}
-
-		// AI functionality
-		// See if there's another unit that you can attack
-		// See if you have any settlers to make a city
-		// See if you have a city to build units with
-		// Move a unit randomly
+	public boolean isAI() {
+		return isAI;
+	}
+	
+	public List<Unit> getUnitList() {
+		return units;
 	}
 }

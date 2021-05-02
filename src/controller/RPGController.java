@@ -60,11 +60,11 @@ public class RPGController {
 		if (tile.getUnit() == null) {
 
 			if (type.equals("settler")) {
-				tile.setUnit(new Settler(this.model.getCurrentTurn()));
+				tile.setUnit(new Settler(col, row, this.model.getCurrentTurn()));
 			} else if (type.equals("foot_soilder")) {
-				tile.setUnit(new FootSoldier(this.model.getCurrentTurn()));
+				tile.setUnit(new FootSoldier(col, row, this.model.getCurrentTurn()));
 			} else if (type.equals("archer")) {
-				tile.setUnit(new Archer(this.model.getCurrentTurn()));
+				tile.setUnit(new Archer(col, row, this.model.getCurrentTurn()));
 			}
 			model.endTurn();
 			this.model.updateView();
@@ -91,17 +91,16 @@ public class RPGController {
 		else if (toUnit != null) {
 			if (fromUnit.getAttackRange() >= moveLength) {
 				if (toTile.getNation() == model.getCurrentTurn()) {
-					model.endTurn();
 					return false; // Cannot attack own pieces
 				} else {
 					toUnit.setHealth(toUnit.getHealth() - fromUnit.getAttackPoints() / toUnit.getDefensePoints());
 					System.out.println(toUnit.getHealth());
 					// Unit is killed
 					if (toUnit.getHealth() <= 0) {
+						toUnit.getNation().getUnitList().remove(toUnit);
 						toTile.setUnit(null);
 					}
-					model.endTurn();
-					this.model.updateView();
+					this.endTurn();
 					return true;
 				}
 			} else {
@@ -115,10 +114,49 @@ public class RPGController {
 			toTile.setUnit(fromUnit);
 			fromTile.setUnit(null);
 			toTile.setNation(model.getCurrentTurn());
-			this.model.updateView();
-			model.endTurn();
+			fromUnit.setPositition(toCol, toRow);
+			this.endTurn();
 			return true;
 		}
+	}
+
+	private void endTurn() {
+		model.endTurn();
+		this.model.updateView();
+
+		takeTurn();
+	}
+
+	public void takeTurn() {
+		if (!model.getCurrentTurn().isAI()) {
+			return;
+		}
+		
+		// AI functionality
+		// See if there's another unit that you can attack
+		for (Unit friendlyUnit : model.getCurrentTurn().getUnitList()) {
+			for (Unit enemyUnit : model.getCurrentTurn().enemyNation.getUnitList()) {
+				if (moveUnit(friendlyUnit.getY(), friendlyUnit.getX(), enemyUnit.getY(), enemyUnit.getX())) {
+					System.out.println("AI has attacked another unit");
+					return;
+				}
+			}
+		}
+
+		// See if you have any settlers to make a city
+		for (Unit friendlyUnit : model.getCurrentTurn().getUnitList()) {
+			if(friendlyUnit instanceof Settler && canBuildCity(friendlyUnit.getX(), friendlyUnit.getY())) {
+				System.out.println("AI has built a settler");
+				buildCity(friendlyUnit.getX(), friendlyUnit.getY());
+				return;
+			}
+		}
+
+		// See if you have a city to build units with
+
+		// Move a unit randomly
+		System.out.println("AI doesn't have any moves");
+		endTurn();
 	}
 
 	public Tile getTile(int col, int row) {
