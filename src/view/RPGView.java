@@ -20,6 +20,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import model.Model;
 import model.Tile;
+import units.Unit;
 
 @SuppressWarnings("deprecation")
 public class RPGView extends Application implements Observer {
@@ -29,7 +30,11 @@ public class RPGView extends Application implements Observer {
 	private Rectangle[][] backgroundRectangles;
 	private ImageView[][] cityImages;
 	private ImageView[][] unitImages;
+	private ImageView[][] highlightImages;
+	private final Image highlight = new Image("/res/highlight.png");
 	private GridPane gridPane;
+	private Button buildOption;
+	private Button moveUnitOption;
 
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -42,6 +47,9 @@ public class RPGView extends Application implements Observer {
 		BorderPane root = new BorderPane();
 		root.setStyle("-fx-background-color: black;");
 		backgroundRectangles = new Rectangle[Model.MAP_SIZE][Model.MAP_SIZE];
+		unitImages = new ImageView[Model.MAP_SIZE][Model.MAP_SIZE];
+		cityImages = new ImageView[Model.MAP_SIZE][Model.MAP_SIZE];
+		highlightImages = new ImageView[Model.MAP_SIZE][Model.MAP_SIZE];
 
 		gridPane = new GridPane();
 		for (int x = 0; x < Model.MAP_SIZE; x++) {
@@ -50,8 +58,16 @@ public class RPGView extends Application implements Observer {
 				Rectangle background = new Rectangle(40, 40);
 				background.setFill(Color.BLACK);
 				stackPane.getChildren().add(background);
-				stackPane.getChildren().add(new ImageView((Image) null));
 				backgroundRectangles[x][y] = background;
+
+				ImageView unitView = new ImageView((Image) null);
+				stackPane.getChildren().add(unitView);
+				unitImages[x][y] = unitView;
+
+				ImageView highlightView = new ImageView((Image) null);
+				stackPane.getChildren().add(highlightView);
+				highlightImages[x][y] = highlightView;
+
 				gridPane.add(stackPane, x, y);
 			}
 		}
@@ -86,7 +102,7 @@ public class RPGView extends Application implements Observer {
 			optionsBar.getColumnConstraints().add(colConstraint);
 		}
 
-		Button buildOption = new Button();
+		buildOption = new Button();
 		buildOption.setText("Build");
 		// When this button is clicked, turnOption is set to true
 		// If turnOption is set to true, it means the player
@@ -95,7 +111,7 @@ public class RPGView extends Application implements Observer {
 			this.turnOption = true;
 		});
 
-		Button moveUnitOption = new Button();
+		moveUnitOption = new Button();
 		moveUnitOption.setText("Move Unit");
 		// When this button is clicked, turnOption is set to false
 		// So now it means the player wants to move a unit
@@ -119,16 +135,19 @@ public class RPGView extends Application implements Observer {
 		int mouseY = (int) ((event.getSceneY()) / 40);
 
 		if (this.mouseX != -1 && this.mouseY != -1) {
-			backgroundRectangles[this.mouseX][this.mouseY].setFill(Color.BLACK);
-		}
-		if (this.mouseX == mouseX && this.mouseY == mouseY) {
-			backgroundRectangles[this.mouseX][this.mouseY].setFill(Color.BLACK);
+			controller.moveUnit(this.mouseY, this.mouseX, mouseY, mouseX);
+			highlightImages[this.mouseX][this.mouseY].setImage((Image) null);
 			this.mouseX = -1;
 			this.mouseY = -1;
 		} else {
-			this.mouseX = mouseX;
-			this.mouseY = mouseY;
-			backgroundRectangles[this.mouseX][this.mouseY].setFill(Color.WHITE);
+			if (controller.selectUnit(mouseY, mouseX)) {
+				this.mouseX = mouseX;
+				this.mouseY = mouseY;
+				highlightImages[this.mouseX][this.mouseY].setImage(highlight);
+			} else {
+				this.mouseX = -1;
+				this.mouseY = -1;
+			}
 		}
 	}
 
@@ -148,6 +167,11 @@ public class RPGView extends Application implements Observer {
 					this.backgroundRectangles[i][j].setFill(Color.GREEN);
 				} else if (current.getLandType().equals(Tile.WATER)) {
 					this.backgroundRectangles[i][j].setFill(Color.BLUE);
+				}
+				if (current.getUnit() != null) {
+					this.unitImages[i][j].setImage(current.getUnit().getSprite());
+				} else {
+					this.unitImages[i][j].setImage(null);
 				}
 			}
 		}
