@@ -11,15 +11,15 @@ public class Model extends Observable {
 
 	private Tile[][] map;
 	public static final int MAP_SIZE = 15;
+	public static final Nation BLUE_NATION = new Nation("Blue Nation");
+	public static final Nation RED_NATION = new Nation("Red Nation");
 	private Nation currentTurn;
 
 	public Model(Observer view) {
 		// Set up nations
-		Nation blueNation = new Nation("Blue Nation");
-		Nation redNation = new Nation("Red Nation");
-		blueNation.enemyNation = redNation;
-		redNation.enemyNation = blueNation;
-		currentTurn = blueNation;
+		BLUE_NATION.enemyNation = RED_NATION;
+		RED_NATION.enemyNation = BLUE_NATION;
+		currentTurn = BLUE_NATION;
 
 		// Add view as observer of model
 		this.addObserver(view);
@@ -30,8 +30,8 @@ public class Model extends Observable {
 		for (int i = 0; i < MAP_SIZE; i++) {
 			for (int j = 0; j < MAP_SIZE; j++) {
 				// Some tiles are dry land, and others are water
-				// It should be asy to add more tile variants here
-				int random = (int) Math.floor(Math.random() * 2);
+				// It should be easy to add more tile variants here
+				int random = (int) Math.floor(Math.random() * 3);
 				switch (random) {
 				case 0:
 					this.map[i][j] = new Tile(null, Tile.WATER);
@@ -39,11 +39,14 @@ public class Model extends Observable {
 				case 1:
 					this.map[i][j] = new Tile(null, Tile.DRY_LAND);
 					break;
+				case 2:
+					this.map[i][j] = new Tile(null, Tile.DRY_LAND);
+					break;
 				}
 			}
 		}
-		this.map[0][0].setUnit(new FootSoldier(blueNation));
-		this.map[6][4].setUnit(new Settler(redNation));
+		this.map[0][0].setUnit(new FootSoldier(BLUE_NATION));
+		this.map[6][4].setUnit(new Settler(RED_NATION));
 	}
 
 	public Tile getTileAt(int row, int col) {

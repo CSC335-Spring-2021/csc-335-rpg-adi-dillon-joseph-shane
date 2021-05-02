@@ -2,8 +2,13 @@ package controller;
 
 import java.util.Observer;
 
+import city.City;
 import model.Model;
+import model.Nation;
 import model.Tile;
+import units.Archer;
+import units.FootSoldier;
+import units.Settler;
 import units.Unit;
 
 @SuppressWarnings("deprecation")
@@ -23,6 +28,47 @@ public class RPGController {
 		} else {
 			model.getCurrentTurn().movesLeft = selectedUnit.getMovesPerTurn();
 			return true;
+		}
+	}
+
+	public void buildCity(int col, int row) {
+		Tile tile = this.model.getTileAt(row, col);
+		Nation currentTurn = model.getCurrentTurn();
+
+		tile.setUnit(null); // Remove the settler
+		tile.setNation(currentTurn); // Land now belongs to current turn user
+		City city = new City(currentTurn.name + " city", 0, currentTurn);
+		tile.setCity(city);
+		model.endTurn();
+		this.model.updateView();
+	}
+
+	public boolean canBuildCity(int col, int row) {
+		Tile tile = this.model.getTileAt(row, col);
+		return tile.getLandType().equals(Tile.DRY_LAND) && tile.getUnit() instanceof Settler
+				&& tile.getNation() == null;
+	}
+
+	public boolean canAddUnit(int col, int row) {
+		Tile tile = this.model.getTileAt(row, col);
+		String tileNation = tile.getNation() == null? "" : tile.getNation().name;
+		return this.model.getCurrentTurn().name.equals(tileNation)
+				&& this.model.getTileAt(row, col).getCity() != null;
+	}
+
+	public void addUnit(int col, int row, String type) {
+		Tile tile = this.model.getTileAt(row, col);
+		if (tile.getUnit() == null) {
+
+			if (type.equals("settler")) {
+				tile.setUnit(new Settler(this.model.getCurrentTurn()));
+			}else if(type.equals("foot_soilder")) {
+				tile.setUnit(new FootSoldier(this.model.getCurrentTurn()));
+			}else if(type.equals("archer")) {
+				tile.setUnit(new Archer(this.model.getCurrentTurn()));
+			}
+			model.endTurn();
+			this.model.updateView();
 		}
 	}
 
@@ -59,7 +105,7 @@ public class RPGController {
 					this.model.updateView();
 					return true;
 				}
-			}else {
+			} else {
 				return false;
 			}
 
