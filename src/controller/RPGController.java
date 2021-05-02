@@ -51,9 +51,8 @@ public class RPGController {
 
 	public boolean canAddUnit(int col, int row) {
 		Tile tile = this.model.getTileAt(row, col);
-		String tileNation = tile.getNation() == null? "" : tile.getNation().name;
-		return this.model.getCurrentTurn().name.equals(tileNation)
-				&& this.model.getTileAt(row, col).getCity() != null;
+		Nation tileNation = tile.getNation();
+		return this.model.getCurrentTurn() == tileNation && this.model.getTileAt(row, col).getCity() != null;
 	}
 
 	public void addUnit(int col, int row, String type) {
@@ -62,9 +61,9 @@ public class RPGController {
 
 			if (type.equals("settler")) {
 				tile.setUnit(new Settler(this.model.getCurrentTurn()));
-			}else if(type.equals("foot_soilder")) {
+			} else if (type.equals("foot_soilder")) {
 				tile.setUnit(new FootSoldier(this.model.getCurrentTurn()));
-			}else if(type.equals("archer")) {
+			} else if (type.equals("archer")) {
 				tile.setUnit(new Archer(this.model.getCurrentTurn()));
 			}
 			model.endTurn();
