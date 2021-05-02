@@ -1,6 +1,7 @@
 
 package units;
 
+import javafx.scene.image.Image;
 import model.Nation;
 
 /**
@@ -17,6 +18,7 @@ public abstract class Unit {
 	private final double attackPoints;
 	private final double defensePoints;
 	private final int movesPerTurn;
+	private final Image sprite;
 
 	/**
 	 * Constructor for a unit
@@ -29,12 +31,13 @@ public abstract class Unit {
 	 * @param defensePoints How much defense each unit has
 	 * @param movesPerTurn  How many tiles each unit can move per turn
 	 */
-	public Unit(Nation nation, double attackPoints, double defensePoints, int movesPerTurn) {
+	public Unit(Nation nation, double attackPoints, double defensePoints, int movesPerTurn, Image sprite) {
 		this.nation = nation;
 		this.health = 100;
 		this.attackPoints = attackPoints;
 		this.defensePoints = defensePoints;
 		this.movesPerTurn = movesPerTurn;
+		this.sprite = sprite;
 	}
 
 	public Nation getNation() {
@@ -63,6 +66,10 @@ public abstract class Unit {
 
 	public int getMovesPerTurn() {
 		return this.movesPerTurn;
+	}
+	
+	public Image getSprite() {
+		return this.sprite;
 	}
 
 }
