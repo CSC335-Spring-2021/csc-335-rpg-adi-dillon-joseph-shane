@@ -86,6 +86,8 @@ public class RPGController {
 		// Unit moved not own unit, ignore
 		else if (fromUnit.getNation() != model.getCurrentTurn()) {
 			return false;
+		}else if(toTile.getLandType().equals(Tile.WATER)) {
+			return false;
 		}
 		// Unit moved to another unit, attack or ignore
 		else if (toUnit != null) {
@@ -114,7 +116,6 @@ public class RPGController {
 			// Move unit
 			toTile.setUnit(fromUnit);
 			fromTile.setUnit(null);
-			toTile.setNation(model.getCurrentTurn());
 			this.model.updateView();
 			model.endTurn();
 			return true;
