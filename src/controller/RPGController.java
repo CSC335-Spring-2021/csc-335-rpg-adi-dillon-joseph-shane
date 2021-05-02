@@ -13,6 +13,18 @@ public class RPGController {
 	public RPGController(Observer view) {
 		model = new Model(view);
 	}
+	
+	public boolean selectUnit(int col, int row) {
+		final Unit selectedUnit = model.getTileAt(row, col).getUnit();
+		if(selectedUnit == null) {
+			return false;
+		} else if(selectedUnit.getNation() != model.getCurrentTurn()) {
+			return false;
+		} else {
+			model.getCurrentTurn().movesLeft = selectedUnit.getMovesPerTurn();
+			return true;
+		}
+	}
 
 	public boolean moveUnit(int fromCol, int fromRow, int toCol, int toRow) {
 		final Tile fromTile = model.getTileAt(fromRow, fromCol);
@@ -21,8 +33,9 @@ public class RPGController {
 		final Unit toUnit = toTile.getUnit();
 
 		int moveLength = Math.abs(fromCol - toCol) + Math.abs(fromRow - toRow);
+		System.out.println("Move length: " + moveLength + " Nation moves left " + model.getCurrentTurn().movesLeft);
 		// Move length is too large, ignore move
-		if (model.getCurrentTurn().movesLeft >= moveLength) {
+		if (model.getCurrentTurn().movesLeft < moveLength) {
 			return false;
 		}
 		// Unit moved not own unit, ignore
@@ -32,31 +45,28 @@ public class RPGController {
 		// Unit moved to another unit, attack or ignore
 		else if (toUnit != null) {
 			if (toTile.getNation() == model.getCurrentTurn()) {
-				this.model.updateView();
-				return true; // Cannot attack own pieces
+				model.endTurn();
+				return false; // Cannot attack own pieces
 			} else {
 				toUnit.setHealth(toUnit.getHealth() - fromUnit.getAttackPoints() / toUnit.getDefensePoints());
+				System.out.println(toUnit.getHealth());
+				// Unit is killed
+				if (toUnit.getHealth() <= 0) {
+					toTile.setUnit(null);
+				}
+				model.endTurn();
 				this.model.updateView();
 				return true;
 			}
 		}
 		// Normal unit movement
 		else {
-			// Check model moves
-			if (model.getCurrentTurn().movesLeft == -1) {
-				model.getCurrentTurn().movesLeft = fromUnit.getMovesPerTurn();
-			}
-
 			// Move unit
 			toTile.setUnit(fromUnit);
 			fromTile.setUnit(null);
 			toTile.setNation(model.getCurrentTurn());
-			model.getCurrentTurn().movesLeft -= moveLength;
-			// Check if turn is over
-			if (model.getCurrentTurn().movesLeft == 0) {
-				model.endTurn();
-			}
 			this.model.updateView();
+			model.endTurn();
 			return true;
 		}
 	}

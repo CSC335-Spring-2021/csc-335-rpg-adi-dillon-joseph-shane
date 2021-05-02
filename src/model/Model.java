@@ -3,7 +3,7 @@ package model;
 import java.util.Observable;
 import java.util.Observer;
 
-import javafx.scene.paint.Color;
+import units.TestUnit;
 
 @SuppressWarnings("deprecation")
 public class Model extends Observable {
@@ -41,6 +41,8 @@ public class Model extends Observable {
 				}
 			}
 		}
+		this.map[0][0].setUnit(new TestUnit(blueNation));
+		this.map[6][4].setUnit(new TestUnit(redNation));
 	}
 
 	public Tile getTileAt(int row, int col) {
