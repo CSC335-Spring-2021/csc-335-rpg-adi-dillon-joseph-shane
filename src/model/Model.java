@@ -15,8 +15,8 @@ public class Model extends Observable {
 
 	public Model(Observer view) {
 		// Set up nations
-		Nation blueNation = new Nation("Blue Nation");
-		Nation redNation = new Nation("Red Nation");
+		Nation blueNation = new Nation("Blue Nation", true);
+		Nation redNation = new Nation("Red Nation", true);
 		blueNation.enemyNation = redNation;
 		redNation.enemyNation = blueNation;
 		currentTurn = blueNation;
@@ -44,6 +44,7 @@ public class Model extends Observable {
 		}
 		this.map[0][0].setUnit(new FootSoldier(blueNation));
 		this.map[6][4].setUnit(new Settler(redNation));
+		currentTurn.takeTurn();
 	}
 
 	public Tile getTileAt(int row, int col) {
