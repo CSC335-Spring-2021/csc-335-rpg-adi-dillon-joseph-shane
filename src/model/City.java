@@ -4,7 +4,7 @@ import javafx.scene.image.Image;
 
 public class City {
 	
-	private final int buildCost = 500;
+	private final int buildCost = 200;
 	private String cityName;
 	private Nation nation;
 	private final Image sprite;
@@ -16,7 +16,7 @@ public class City {
 	}
 	
 	public int getBuildCost() {
-		return this.buildCost;
+		return (int) (this.buildCost*Math.pow(2, this.nation.getCityCount())); // Power series to double cost each time
 	}
 	
 	public City(String name, int money, Nation nation) {
