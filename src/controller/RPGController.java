@@ -92,8 +92,9 @@ public class RPGController {
 		}
 		// Unit moved not own unit, ignore
 		else if (fromUnit.getNation() != model.getCurrentTurn()) {
-			System.out.println("Need to move own unit");
-			return false; // Need to move own unit
+			return false;
+		}else if(toTile.getLandType().equals(Tile.WATER)) {
+			return false;
 		}
 		// Unit moved to another unit, attack or ignore
 		else if (toUnit != null) {

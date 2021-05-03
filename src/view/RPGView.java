@@ -98,6 +98,7 @@ public class RPGView extends Application implements Observer {
 	}
 
 	private void gridClicked(MouseEvent event) {
+		this.removeOptionsBar(); // Sanity check
 
 		int mouseX = (int) ((event.getSceneX()) / 40);
 		int mouseY = (int) ((event.getSceneY()) / 40);
@@ -120,37 +121,59 @@ public class RPGView extends Application implements Observer {
 				}
 			}
 		}else {
-			if(this.controller.canBuildCity(mouseY, mouseX)) {
-				Alert confirm =  new Alert(AlertType.CONFIRMATION);
-				confirm.setContentText("Would you like to build a city here for 500 gold?");
-				confirm.showAndWait().ifPresent(response -> {
-					if(response.getText().equals("OK")) {
-						this.controller.buildCity(mouseY, mouseX);
-					}
-				});
-				
-			}else if(this.controller.canAddUnit(mouseY, mouseX)) {
+			if(this.controller.canAddUnit(mouseY, mouseX)) {
 				ButtonType addUnit = new ButtonType("Add Unit", ButtonData.OK_DONE);
 				ButtonType cancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
 				Alert alert = new Alert(AlertType.CONFIRMATION, "Do you want to adda unit?", addUnit, cancel);
 				alert.showAndWait().ifPresent(response -> {
 					if(response.getText().equals("Add Unit")) {
-						this.createOptionsBar(mouseY, mouseX);
+						this.createSettlerOptionsBar(mouseY, mouseX);
 					}
 				});
 			}
 			else {
-				Alert error = new Alert(AlertType.ERROR);
-				error.setContentText("You can't build a city here!");
-				error.show();
+				if(this.controller.canBuildCity(mouseY, mouseX)) {
+					this.createCityOptionsBar(mouseY, mouseX);			
+				}
 			}
 		}
 	}
 	
-	private void createOptionsBar(int mouseY, int mouseX) {
+	private void createCityOptionsBar(int mouseY, int mouseX) {
 		GridPane optionsBar = new GridPane();
 
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 1; i++) {
+			ColumnConstraints colConstraint = new ColumnConstraints();
+			colConstraint.setPercentWidth(100);
+			colConstraint.setHalignment(HPos.CENTER);
+			optionsBar.getColumnConstraints().add(colConstraint);
+		}
+
+		Button buildCity = new Button();
+		buildCity.setText("Build City (-500 gold)");
+		buildCity.setOnAction((event) -> {
+			Alert confirm =  new Alert(AlertType.CONFIRMATION);
+			confirm.setContentText("Are you sure you'd like to build a city here for 500 gold?");
+			confirm.showAndWait().ifPresent(response -> {
+				if(response.getText().equals("OK")) {
+					this.controller.buildCity(mouseY, mouseX);
+					this.removeOptionsBar();
+				}
+			});
+		});
+
+
+		optionsBar.add(buildCity, 0, 0);
+		
+		this.root.setBottom(optionsBar);
+		this.stage.sizeToScene();
+
+	}
+	
+	private void createSettlerOptionsBar(int mouseY, int mouseX) {
+		GridPane optionsBar = new GridPane();
+
+		for (int i = 0; i < 3; i++) {
 			ColumnConstraints colConstraint = new ColumnConstraints();
 			colConstraint.setPercentWidth(33.33);
 			colConstraint.setHalignment(HPos.CENTER);
@@ -161,21 +184,21 @@ public class RPGView extends Application implements Observer {
 		addSettler.setText("Add Settler");
 		addSettler.setOnAction((event) -> {
 			this.controller.addUnit(mouseY, mouseX, "settler");
-			this.removeOptionsBar();
+			this.removeOptionsBar(); 
 		});
 		
 		Button addFootSoilder = new Button();
 		addFootSoilder.setText("Add Foot Soilder");
 		addFootSoilder.setOnAction((event) -> {
 			this.controller.addUnit(mouseY, mouseX, "foot_soilder");
-			this.removeOptionsBar();
+			this.removeOptionsBar(); 
 		});
 		
 		Button addArcher = new Button();
 		addArcher.setText("Add Archer");
 		addArcher.setOnAction((event) -> {
 			this.controller.addUnit(mouseY, mouseX, "archer");
-			this.removeOptionsBar();
+			this.removeOptionsBar(); 
 		});
 
 		optionsBar.add(addSettler, 0, 0);
