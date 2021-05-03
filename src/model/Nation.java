@@ -9,6 +9,8 @@ public class Nation {
 	public String name;
 	public int movesLeft;
 	public Nation enemyNation;
+	private int gold;
+	private int cityCount;
 	private final boolean isAI;
 	private final ArrayList<Unit> units;
 
@@ -16,6 +18,8 @@ public class Nation {
 		this.name = name;
 		this.isAI = isAI;
 		this.units = new ArrayList<>();
+		this.gold = 500;
+		this.cityCount = 0;
 	}
 
 	public boolean isAI() {
@@ -24,5 +28,29 @@ public class Nation {
 	
 	public List<Unit> getUnitList() {
 		return units;
+	}
+	
+	public int getGoldAmount() {
+		return this.gold;
+	}
+	
+	public void addGold(int amt) {
+		this.gold += amt;
+	}
+	
+	public void removeGold(int amt) {
+		this.gold -= amt;
+	}
+	
+	public int getCityCount() {
+		return this.cityCount;
+	}
+	
+	public void increaseCityCount(int amt) {
+		this.cityCount += amt;
+	}
+	
+	public void decreaseCityCount(int amt) {
+		this.cityCount -= amt;
 	}
 }

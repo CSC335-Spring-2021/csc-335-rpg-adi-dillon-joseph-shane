@@ -1,11 +1,10 @@
-package city;
+package model;
 
 import javafx.scene.image.Image;
-import model.Model;
-import model.Nation;
 
 public class City {
 	
+	private final int buildCost = 500;
 	private String cityName;
 	private int revenue;
 	private Nation nation;
@@ -16,6 +15,10 @@ public class City {
 		revenue = 0;
 		nation = null;
 		sprite = null;
+	}
+	
+	public int getBuildCost() {
+		return this.buildCost;
 	}
 	
 	public City(String name, int money, Nation nation) {
