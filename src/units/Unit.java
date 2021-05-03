@@ -35,6 +35,8 @@ public abstract class Unit {
 	 */
 	public Unit(int x, int y, Nation nation, double attackPoints, double defensePoints, int movesPerTurn,
 			int attackRange, Image sprite) {
+		this.x = x;
+		this.y = y;
 		this.nation = nation;
 		this.health = 100;
 		this.attackPoints = attackPoints;

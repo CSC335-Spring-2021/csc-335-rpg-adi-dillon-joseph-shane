@@ -63,19 +63,19 @@ public class RPGView extends Application implements Observer {
 				Rectangle background = new Rectangle(40, 40);
 				background.setFill(Color.BLACK);
 				stackPane.getChildren().add(background);
-				backgroundRectangles[x][y] = background;
+				backgroundRectangles[y][x] = background;
 
 				ImageView unitView = new ImageView((Image) null);
 				stackPane.getChildren().add(unitView);
-				unitImages[x][y] = unitView;
+				unitImages[y][x] = unitView;
 
 				ImageView highlightView = new ImageView((Image) null);
 				stackPane.getChildren().add(highlightView);
-				highlightImages[x][y] = highlightView;
+				highlightImages[y][x] = highlightView;
 				
 				ImageView cityView = new ImageView((Image) null);
 				stackPane.getChildren().add(cityView);
-				cityImages[x][y] = cityView;
+				cityImages[y][x] = cityView;
 
 				gridPane.add(stackPane, x, y);
 			}
@@ -104,15 +104,16 @@ public class RPGView extends Application implements Observer {
 
 		if (event.getButton() == MouseButton.SECONDARY) {
 			if (this.mouseX != -1 && this.mouseY != -1) {
-				controller.moveUnit(this.mouseY, this.mouseX, mouseY, mouseX);
-				highlightImages[this.mouseX][this.mouseY].setImage((Image) null);
+				controller.moveUnit(this.mouseX, this.mouseY, mouseX, mouseY);
+				highlightImages[this.mouseY][this.mouseX].setImage((Image) null);
 				this.mouseX = -1;
 				this.mouseY = -1;
+				controller.endTurn();
 			} else {
-				if (controller.selectUnit(mouseY, mouseX)) {
+				if (controller.selectUnit(mouseX, mouseY)) {
 					this.mouseX = mouseX;
 					this.mouseY = mouseY;
-					highlightImages[this.mouseX][this.mouseY].setImage(highlight);
+					highlightImages[this.mouseY][this.mouseX].setImage(highlight);
 				} else {
 					this.mouseX = -1;
 					this.mouseY = -1;

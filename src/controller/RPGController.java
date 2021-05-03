@@ -20,10 +20,12 @@ public class RPGController {
 	}
 
 	public boolean selectUnit(int col, int row) {
-		final Unit selectedUnit = model.getTileAt(row, col).getUnit();
+		final Unit selectedUnit = model.getTileAt(col, row).getUnit();
 		if (selectedUnit == null) {
+			System.out.println("Selected unit is null");
 			return false;
 		} else if (selectedUnit.getNation() != model.getCurrentTurn()) {
+			System.out.println("Selected unit is not correct nation");
 			return false;
 		} else {
 			model.getCurrentTurn().movesLeft = selectedUnit.getMovesPerTurn();
@@ -32,7 +34,7 @@ public class RPGController {
 	}
 
 	public void buildCity(int col, int row) {
-		Tile tile = this.model.getTileAt(row, col);
+		Tile tile = this.model.getTileAt(col, row);
 		Nation currentTurn = model.getCurrentTurn();
 
 		tile.setUnit(null); // Remove the settler
@@ -44,19 +46,18 @@ public class RPGController {
 	}
 
 	public boolean canBuildCity(int col, int row) {
-		Tile tile = this.model.getTileAt(row, col);
-		return tile.getLandType().equals(Tile.DRY_LAND) && tile.getUnit() instanceof Settler
-				&& tile.getNation() == null;
+		Tile tile = this.model.getTileAt(col, row);
+		return tile.getLandType().equals(Tile.DRY_LAND) && tile.getUnit() instanceof Settler && tile.getCity() == null;
 	}
 
 	public boolean canAddUnit(int col, int row) {
-		Tile tile = this.model.getTileAt(row, col);
+		Tile tile = this.model.getTileAt(col, row);
 		Nation tileNation = tile.getNation();
 		return this.model.getCurrentTurn() == tileNation && this.model.getTileAt(row, col).getCity() != null;
 	}
 
 	public void addUnit(int col, int row, String type) {
-		Tile tile = this.model.getTileAt(row, col);
+		Tile tile = this.model.getTileAt(col, row);
 		if (tile.getUnit() == null) {
 
 			if (type.equals("settler")) {
@@ -72,25 +73,33 @@ public class RPGController {
 	}
 
 	public boolean moveUnit(int fromCol, int fromRow, int toCol, int toRow) {
-		final Tile fromTile = model.getTileAt(fromRow, fromCol);
-		final Tile toTile = model.getTileAt(toRow, toCol);
+		final Tile fromTile = model.getTileAt(fromCol, fromRow);
+		final Tile toTile = model.getTileAt(toCol, toRow);
+		// To tile out of bounds
+		if (toTile == null) {
+			return false;
+		}
 		final Unit fromUnit = fromTile.getUnit();
 		final Unit toUnit = toTile.getUnit();
 
 		int moveLength = Math.abs(fromCol - toCol) + Math.abs(fromRow - toRow);
 		System.out.println("Move length: " + moveLength + " Nation moves left " + model.getCurrentTurn().movesLeft);
 		// Move length is too large, ignore move
-		if (model.getCurrentTurn().movesLeft < moveLength) {
-			return false;
+		// Selected unit doesn't exist
+		if (fromUnit == null) {
+			System.out.println("Need to move a unit (" + fromCol + ", " + fromRow + ")");
+			return false; // Need to move an actual unit
 		}
 		// Unit moved not own unit, ignore
 		else if (fromUnit.getNation() != model.getCurrentTurn()) {
-			return false;
+			System.out.println("Need to move own unit");
+			return false; // Need to move own unit
 		}
 		// Unit moved to another unit, attack or ignore
 		else if (toUnit != null) {
 			if (fromUnit.getAttackRange() >= moveLength) {
 				if (toTile.getNation() == model.getCurrentTurn()) {
+					System.out.println("Cannot attack own unit");
 					return false; // Cannot attack own pieces
 				} else {
 					toUnit.setHealth(toUnit.getHealth() - fromUnit.getAttackPoints() / toUnit.getDefensePoints());
@@ -100,10 +109,10 @@ public class RPGController {
 						toUnit.getNation().getUnitList().remove(toUnit);
 						toTile.setUnit(null);
 					}
-					this.endTurn();
 					return true;
 				}
 			} else {
+				System.out.println("Out of attack range");
 				return false;
 			}
 
@@ -111,33 +120,54 @@ public class RPGController {
 		// Normal unit movement
 		else {
 			// Move unit
+			if (model.getCurrentTurn().movesLeft < moveLength) {
+				System.out.println("Move is too far");
+				return false;
+			}
 			toTile.setUnit(fromUnit);
 			fromTile.setUnit(null);
 			toTile.setNation(model.getCurrentTurn());
 			fromUnit.setPositition(toCol, toRow);
-			this.endTurn();
 			return true;
 		}
 	}
 
-	private void endTurn() {
+	/*
+	 * Ends the turn for the nation, and calls the other nation to take their turn
+	 */
+	public void endTurn() {
 		model.endTurn();
 		this.model.updateView();
 
 		takeTurn();
 	}
 
+	/*-
+	 * If the nation is not AI controlled, does nothing
+	 * 
+	 * If the nation is AI controlled, will first check:
+	 * 1. If there is other unit to attack 
+	 * 2. If can settle city 
+	 * 3. If can build anything 
+	 * 4. Move random piece
+	 * 5. Skip turn
+	 * 
+	 * If any of the above are true, performs that action for that turn, and then
+	 * returns.
+	 */
 	public void takeTurn() {
 		if (!model.getCurrentTurn().isAI()) {
 			return;
 		}
-		
+
 		// AI functionality
 		// See if there's another unit that you can attack
 		for (Unit friendlyUnit : model.getCurrentTurn().getUnitList()) {
 			for (Unit enemyUnit : model.getCurrentTurn().enemyNation.getUnitList()) {
-				if (moveUnit(friendlyUnit.getY(), friendlyUnit.getX(), enemyUnit.getY(), enemyUnit.getX())) {
+				selectUnit(friendlyUnit.getX(), friendlyUnit.getY());
+				if (moveUnit(friendlyUnit.getX(), friendlyUnit.getY(), enemyUnit.getX(), enemyUnit.getY())) {
 					System.out.println("AI has attacked another unit");
+					endTurn();
 					return;
 				}
 			}
@@ -145,17 +175,30 @@ public class RPGController {
 
 		// See if you have any settlers to make a city
 		for (Unit friendlyUnit : model.getCurrentTurn().getUnitList()) {
-			if(friendlyUnit instanceof Settler && canBuildCity(friendlyUnit.getX(), friendlyUnit.getY())) {
+			if (friendlyUnit instanceof Settler && canBuildCity(friendlyUnit.getX(), friendlyUnit.getY())) {
 				System.out.println("AI has built a settler");
 				buildCity(friendlyUnit.getX(), friendlyUnit.getY());
+				endTurn();
 				return;
 			}
 		}
 
 		// See if you have a city to build units with
+		// TODO (cities should build units before this is done)
 
 		// Move a unit randomly
-		System.out.println("AI doesn't have any moves");
+		for (Unit friendlyUnit : model.getCurrentTurn().getUnitList()) {
+			int moveX = (int) ((Math.random() * 2 - 1) * friendlyUnit.getMovesPerTurn());
+			int moveY = (int) ((Math.random() * 2 - 1) * friendlyUnit.getMovesPerTurn());
+			selectUnit(friendlyUnit.getX(), friendlyUnit.getY());
+			if (moveUnit(friendlyUnit.getX(), friendlyUnit.getY(), friendlyUnit.getX() + moveX,
+					friendlyUnit.getY() + moveY)) {
+				System.out.println("AI has moved a unit");
+				endTurn();
+				return;
+			}
+		}
+		System.out.println("AI has no moves");
 		endTurn();
 	}
 
