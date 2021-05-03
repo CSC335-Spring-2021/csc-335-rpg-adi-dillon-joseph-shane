@@ -11,8 +11,8 @@ public class Model extends Observable {
 
 	private Tile[][] map;
 	public static final int MAP_SIZE = 15;
-	public static final Nation BLUE_NATION = new Nation("Blue Nation");
-	public static final Nation RED_NATION = new Nation("Red Nation");
+	public static final Nation BLUE_NATION = new Nation("Blue Nation", false);
+	public static final Nation RED_NATION = new Nation("Red Nation", true);
 	private Nation currentTurn;
 
 	public Model(Observer view) {
@@ -45,13 +45,17 @@ public class Model extends Observable {
 				}
 			}
 		}
-		this.map[0][0].setUnit(new FootSoldier(BLUE_NATION));
-		this.map[6][4].setUnit(new Settler(RED_NATION));
+		this.map[0][0].setUnit(new FootSoldier(0, 0, BLUE_NATION));
+		
+		this.map[14][14].setUnit(new Settler(14, 14, RED_NATION));
+		this.map[13][14].setUnit(new Settler(14, 13, RED_NATION));
+		this.map[14][13].setUnit(new Settler(13, 14, RED_NATION));
+		this.map[13][13].setUnit(new Settler(13, 13, RED_NATION));
 	}
 
-	public Tile getTileAt(int row, int col) {
+	public Tile getTileAt(int col, int row) {
 		if (row > MAP_SIZE - 1 || row < 0 || col > MAP_SIZE - 1 || col < 0) {
-			throw new IndexOutOfBoundsException("Invalid map index");
+			return null;
 		} else {
 			return this.map[row][col];
 		}

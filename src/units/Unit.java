@@ -13,6 +13,7 @@ import model.Nation;
  * @author Joseph Shimel
  */
 public abstract class Unit {
+	private int x, y;
 	private Nation nation;
 	private double health;
 	private final double attackPoints;
@@ -24,15 +25,18 @@ public abstract class Unit {
 	/**
 	 * Constructor for a unit
 	 * 
-	 * Should only be called by subclasses. Takes in a nation name and some stats
-	 * for the unit.
+	 * Should only be called by subclasses. Takes in a position, nation and some
+	 * stats for the unit.
 	 * 
 	 * @param nationName    Name of the nation the unit belongs to
 	 * @param attackPoints  How many attack points each unit does per turn
 	 * @param defensePoints How much defense each unit has
 	 * @param movesPerTurn  How many tiles each unit can move per turn
 	 */
-	public Unit(Nation nation, double attackPoints, double defensePoints, int movesPerTurn, int attackRange, Image sprite) {
+	public Unit(int x, int y, Nation nation, double attackPoints, double defensePoints, int movesPerTurn,
+			int attackRange, Image sprite) {
+		this.x = x;
+		this.y = y;
 		this.nation = nation;
 		this.health = 100;
 		this.attackPoints = attackPoints;
@@ -40,6 +44,20 @@ public abstract class Unit {
 		this.movesPerTurn = movesPerTurn;
 		this.sprite = sprite;
 		this.attackRange = attackRange;
+		nation.getUnitList().add(this);
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public void setPositition(int x, int y) {
+		this.x = x;
+		this.y = y;
 	}
 
 	public Nation getNation() {
@@ -69,11 +87,11 @@ public abstract class Unit {
 	public int getMovesPerTurn() {
 		return this.movesPerTurn;
 	}
-	
+
 	public int getAttackRange() {
 		return this.attackRange;
 	}
-	
+
 	public Image getSprite() {
 		return this.sprite;
 	}
