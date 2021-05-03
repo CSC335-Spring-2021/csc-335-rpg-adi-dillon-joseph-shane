@@ -6,13 +6,11 @@ public class City {
 	
 	private final int buildCost = 500;
 	private String cityName;
-	private int revenue;
 	private Nation nation;
 	private final Image sprite;
 	
 	public City() {
 		cityName = "";
-		revenue = 0;
 		nation = null;
 		sprite = null;
 	}
@@ -23,7 +21,6 @@ public class City {
 	
 	public City(String name, int money, Nation nation) {
 		this.cityName = name;
-		this.revenue = money;
 		this.nation = nation;
 		
 		String cityNationName = this.nation.name;
@@ -43,9 +40,6 @@ public class City {
 		cityName = name;
 	}
 	
-	public void setRevenue(int money) {
-		revenue = money;
-	}
 	
 	public void setNation(Nation nation) {
 		this.nation = nation;
@@ -55,9 +49,6 @@ public class City {
 		return cityName;
 	}
 	
-	public int getRevenue() {
-		return revenue;
-	}
 	
 	public Nation getNation() {
 		return nation;
@@ -66,7 +57,6 @@ public class City {
 	public String toString() {
 		String output = "";
 		output += "City name: " + cityName + "\n";
-		output += "Revenue generated: " + revenue + "\n";
 		output += "Nation: " + nation + "\n";
 		return output;
 	}

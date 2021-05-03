@@ -50,7 +50,7 @@ public class RPGController {
 		tile.setNation(currentTurn); // Land now belongs to current turn user
 		City city = new City(currentTurn.name + " city", 0, currentTurn);
 		tile.setCity(city);
-		currentTurn.removeGold(500);
+		currentTurn.removeGold(city.getBuildCost());
 		currentTurn.increaseCityCount(1);
 		model.endTurn();
 		this.model.updateView();
