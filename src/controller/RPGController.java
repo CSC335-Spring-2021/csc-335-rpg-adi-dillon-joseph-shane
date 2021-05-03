@@ -20,6 +20,10 @@ public class RPGController {
 	}
 
 	public boolean selectUnit(int col, int row) {
+		if (model.getTileAt(col, row).getCity() != null
+				&& model.getTileAt(col, row).getCity().getNation() == model.getCurrentTurn()) {
+			return true;
+		}
 		final Unit selectedUnit = model.getTileAt(col, row).getUnit();
 		if (selectedUnit == null) {
 			System.out.println("Selected unit is null");
@@ -41,8 +45,6 @@ public class RPGController {
 		tile.setNation(currentTurn); // Land now belongs to current turn user
 		City city = new City(currentTurn.name + " city", 0, currentTurn);
 		tile.setCity(city);
-		model.endTurn();
-		this.model.updateView();
 	}
 
 	public boolean canBuildCity(int col, int row) {
@@ -53,22 +55,20 @@ public class RPGController {
 	public boolean canAddUnit(int col, int row) {
 		Tile tile = this.model.getTileAt(col, row);
 		Nation tileNation = tile.getNation();
-		return this.model.getCurrentTurn() == tileNation && this.model.getTileAt(row, col).getCity() != null;
+		return this.model.getCurrentTurn() == tileNation && tile.getUnit() == null;
 	}
 
 	public void addUnit(int col, int row, String type) {
 		Tile tile = this.model.getTileAt(col, row);
 		if (tile.getUnit() == null) {
-
 			if (type.equals("settler")) {
 				tile.setUnit(new Settler(col, row, this.model.getCurrentTurn()));
-			} else if (type.equals("foot_soilder")) {
+			} else if (type.equals("foot_soldier")) {
+				System.out.println("hello");
 				tile.setUnit(new FootSoldier(col, row, this.model.getCurrentTurn()));
 			} else if (type.equals("archer")) {
 				tile.setUnit(new Archer(col, row, this.model.getCurrentTurn()));
 			}
-			model.endTurn();
-			this.model.updateView();
 		}
 	}
 
@@ -93,7 +93,7 @@ public class RPGController {
 		// Unit moved not own unit, ignore
 		else if (fromUnit.getNation() != model.getCurrentTurn()) {
 			return false;
-		}else if(toTile.getLandType().equals(Tile.WATER)) {
+		} else if (toTile.getLandType().equals(Tile.WATER)) {
 			return false;
 		}
 		// Unit moved to another unit, attack or ignore
@@ -204,7 +204,7 @@ public class RPGController {
 	}
 
 	public Tile getTile(int col, int row) {
-		return model.getTileAt(row, col);
+		return model.getTileAt(col, row);
 	}
 
 	public void updateView() {
