@@ -22,6 +22,10 @@ public abstract class Unit {
 	private final int movesPerTurn;
 	private final int attackRange;
 	private final Image sprite;
+	
+	public static final int ARCHER_BUILD_COST = 75;
+	public static final int FOOT_SOLDIER_BUILD_COST = 100;
+	public static final int SETTLER_BUILD_COST = 50;
 
 	/**
 	 * Constructor for a unit

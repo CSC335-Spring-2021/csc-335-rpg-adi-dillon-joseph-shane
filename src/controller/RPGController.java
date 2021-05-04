@@ -36,15 +36,14 @@ public class RPGController {
 			return true;
 		}
 	}
-	
+
 	public int getPlayerGold() {
 		return Model.BLUE_NATION.getGoldAmount();
 	}
-	
+
 	public int getAIGold() {
 		return Model.RED_NATION.getGoldAmount();
 	}
-
 
 	public void buildCity(int col, int row) {
 		Tile tile = this.model.getTileAt(col, row);
@@ -52,15 +51,16 @@ public class RPGController {
 
 		tile.setUnit(null); // Remove the settler
 		tile.setNation(currentTurn); // Land now belongs to current turn user
-		City city = new City(currentTurn.name + " city", 0, currentTurn);
+		City city = new City(col, row, currentTurn.name + " city", 0, currentTurn);
 		tile.setCity(city);
-		currentTurn.removeGold(city.getBuildCost());
+		currentTurn.removeGold(currentTurn.getCityCost());
 		currentTurn.increaseCityCount(1);
 	}
 
 	public boolean canBuildCity(int col, int row) {
 		Tile tile = this.model.getTileAt(col, row);
-		return tile.getLandType().equals(Tile.DRY_LAND) && tile.getUnit() instanceof Settler && tile.getCity() == null;
+		return tile.getLandType().equals(Tile.DRY_LAND) && tile.getUnit() instanceof Settler && tile.getCity() == null
+				&& this.model.getCurrentTurn().getGoldAmount() >= this.model.getCurrentTurn().getCityCost();
 	}
 
 	public boolean canAddUnit(int col, int row) {
@@ -69,20 +69,27 @@ public class RPGController {
 		return this.model.getCurrentTurn() == tileNation && tile.getUnit() == null;
 	}
 
-	public void addUnit(int col, int row, String type) {
+	public boolean addUnit(int col, int row, String type) {
 		Tile tile = this.model.getTileAt(col, row);
 		Nation currentTurn = this.model.getCurrentTurn();
 		if (tile.getUnit() == null) {
 			Unit unit = null;
 			if (type.equals("settler")) {
-				unit = new Settler(col, row,currentTurn );
+				unit = new Settler(col, row, currentTurn);
 			} else if (type.equals("foot_soldier")) {
-				unit = new FootSoldier(col, row,currentTurn );
+				unit = new FootSoldier(col, row, currentTurn);
 			} else if (type.equals("archer")) {
-				unit = new Archer(col, row,currentTurn );
+				unit = new Archer(col, row, currentTurn);
 			}
-			tile.setUnit(unit);
-			currentTurn.removeGold(unit.getBuildCost());
+			if (unit.getBuildCost() <= currentTurn.getGoldAmount()) {
+				tile.setUnit(unit);
+				currentTurn.removeGold(unit.getBuildCost());
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
 		}
 	}
 
@@ -97,11 +104,9 @@ public class RPGController {
 		final Unit toUnit = toTile.getUnit();
 
 		int moveLength = Math.abs(fromCol - toCol) + Math.abs(fromRow - toRow);
-		System.out.println("Move length: " + moveLength + " Nation moves left " + model.getCurrentTurn().movesLeft);
 		// Move length is too large, ignore move
 		// Selected unit doesn't exist
 		if (fromUnit == null) {
-			System.out.println("Need to move a unit (" + fromCol + ", " + fromRow + ")");
 			return false; // Need to move an actual unit
 		}
 		// Unit moved not own unit, ignore
@@ -113,12 +118,10 @@ public class RPGController {
 		// Unit moved to another unit, attack or ignore
 		else if (toUnit != null) {
 			if (fromUnit.getAttackRange() >= moveLength) {
-				if (toTile.getNation() == model.getCurrentTurn()) {
-					System.out.println("Cannot attack own unit");
+				if (toUnit.getNation() == model.getCurrentTurn()) {
 					return false; // Cannot attack own pieces
 				} else {
 					toUnit.setHealth(toUnit.getHealth() - fromUnit.getAttackPoints() / toUnit.getDefensePoints());
-					System.out.println(toUnit.getHealth());
 					// Unit is killed
 					if (toUnit.getHealth() <= 0) {
 						toUnit.getNation().getUnitList().remove(toUnit);
@@ -127,7 +130,6 @@ public class RPGController {
 					return true;
 				}
 			} else {
-				System.out.println("Out of attack range");
 				return false;
 			}
 
@@ -136,7 +138,6 @@ public class RPGController {
 		else {
 			// Move unit
 			if (model.getCurrentTurn().movesLeft < moveLength) {
-				System.out.println("Move is too far");
 				return false;
 			}
 			toTile.setUnit(fromUnit);
@@ -191,7 +192,7 @@ public class RPGController {
 		// See if you have any settlers to make a city
 		for (Unit friendlyUnit : model.getCurrentTurn().getUnitList()) {
 			if (friendlyUnit instanceof Settler && canBuildCity(friendlyUnit.getX(), friendlyUnit.getY())) {
-				System.out.println("AI has built a settler");
+				System.out.println("AI has built a city");
 				buildCity(friendlyUnit.getX(), friendlyUnit.getY());
 				endTurn();
 				return;
@@ -199,18 +200,34 @@ public class RPGController {
 		}
 
 		// See if you have a city to build units with
-		// TODO (cities should build units before this is done)
+		for (City city : model.getCurrentTurn().getCitiesList()) {
+			if (addUnit(city.getX(), city.getY(), "foot_soldier")) {
+				System.out.println("AI has built a unit");
+				endTurn();
+				return;
+			} else if (addUnit(city.getX(), city.getY(), "archer")) {
+				System.out.println("AI has built a unit");
+				endTurn();
+				return;
+			} else if (addUnit(city.getX(), city.getY(), "settler")) {
+				System.out.println("AI has built a unit");
+				endTurn();
+				return;
+			}
+		}
 
 		// Move a unit randomly
 		for (Unit friendlyUnit : model.getCurrentTurn().getUnitList()) {
-			int moveX = (int) ((Math.random() * 2 - 1) * friendlyUnit.getMovesPerTurn());
-			int moveY = (int) ((Math.random() * 2 - 1) * friendlyUnit.getMovesPerTurn());
-			selectUnit(friendlyUnit.getX(), friendlyUnit.getY());
-			if (moveUnit(friendlyUnit.getX(), friendlyUnit.getY(), friendlyUnit.getX() + moveX,
-					friendlyUnit.getY() + moveY)) {
-				System.out.println("AI has moved a unit");
-				endTurn();
-				return;
+			for (int i = 0; i < 100; i++) {
+				int moveX = (int) ((Math.random() * 2 - 1) * friendlyUnit.getMovesPerTurn());
+				int moveY = (int) ((Math.random() * 2 - 1) * friendlyUnit.getMovesPerTurn());
+				selectUnit(friendlyUnit.getX(), friendlyUnit.getY());
+				if (moveUnit(friendlyUnit.getX(), friendlyUnit.getY(), friendlyUnit.getX() + moveX,
+						friendlyUnit.getY() + moveY)) {
+					System.out.println("AI has moved a unit");
+					endTurn();
+					return;
+				}
 			}
 		}
 		System.out.println("AI has no moves");

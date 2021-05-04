@@ -69,8 +69,7 @@ public class Model extends Observable {
 	}
 
 	public void endTurn() {
-		currentTurn.addGold(25 * currentTurn.getCityCount());
-		currentTurn.addGold(5 * currentTurn.getUnitList().size());// Add revenue based on number of cities and units
+		currentTurn.addGold(5 * currentTurn.getCityCount());
 		currentTurn = currentTurn.enemyNation;
 	}
 
