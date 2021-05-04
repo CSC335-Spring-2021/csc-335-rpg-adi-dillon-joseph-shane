@@ -10,6 +10,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -20,6 +22,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import model.Model;
 import model.Tile;
@@ -28,6 +31,8 @@ import units.Settler;
 @SuppressWarnings("deprecation")
 public class RPGView extends Application implements Observer {
 	private BorderPane root;
+	private Label playerGoldLabel;
+	private Label AIGoldLabel;
 	private int mouseX = -1, mouseY = -1;
 	private RPGController controller;
 	private Rectangle[][] backgroundRectangles;
@@ -80,6 +85,9 @@ public class RPGView extends Application implements Observer {
 		}
 		gridPane.setOnMouseClicked(event -> gridClicked(event));
 		root.setCenter(gridPane);
+		
+		// Adding the gold amounts to the top
+		addStatsBar(root);
 
 		BorderPane actionMenu = new BorderPane();
 		actionMenu.setPadding(new Insets(8, 8, 8, 8));
@@ -123,6 +131,43 @@ public class RPGView extends Application implements Observer {
 
 		stage.show(); // Show the stage
 	}
+	
+	private void addStatsBar(BorderPane root) {
+		GridPane statsBar = new GridPane();
+
+		for (int i = 0; i < 2; i++) {
+			ColumnConstraints colConstraint = new ColumnConstraints();
+			colConstraint.setPercentWidth(50);
+			colConstraint.setHalignment(HPos.CENTER);
+			statsBar.getColumnConstraints().add(colConstraint);
+		}
+		
+		
+		Label playerText = new Label("You");
+		playerText.setFont(new Font(20));
+		playerText.setTextFill(Color.WHITE);
+		
+		this.playerGoldLabel = new Label("Gold: " + String.valueOf(this.controller.getPlayerGold()));
+		this.playerGoldLabel.setFont(new Font(15));
+		this.playerGoldLabel.setTextFill(Color.WHITE);
+			
+		statsBar.add(playerText,0,0);
+		statsBar.add(this.playerGoldLabel,0,1);
+		
+		Label AIText = new Label("AI");
+		AIText.setFont(new Font(20));
+		AIText.setTextFill(Color.WHITE);
+		
+		this.AIGoldLabel = new Label("Gold: " + String.valueOf(this.controller.getAIGold()));
+		this.AIGoldLabel.setFont(new Font(15));
+		this.AIGoldLabel.setTextFill(Color.WHITE);
+		
+		statsBar.add(AIText,1,0);
+		statsBar.add(this.AIGoldLabel,1,1);
+		
+		
+		root.setTop(statsBar);
+	}
 
 	private void selectTile(int mouseX, int mouseY) {
 		this.mouseX = mouseX;
@@ -153,7 +198,7 @@ public class RPGView extends Application implements Observer {
 
 	private void gridClicked(MouseEvent event) {
 		int mouseX = (int) ((event.getSceneX()) / 40);
-		int mouseY = (int) ((event.getSceneY()) / 40);
+		int mouseY = (int) ((event.getSceneY() - 35)  / 40);
 
 		if (this.mouseX == mouseX && this.mouseY == mouseY) {
 			deselectTile();
@@ -248,6 +293,9 @@ public class RPGView extends Application implements Observer {
 				}
 			}
 		}
+		
+		this.playerGoldLabel.setText("Gold: " + String.valueOf(this.controller.getPlayerGold()));
+		this.AIGoldLabel.setText("Gold: " + String.valueOf(this.controller.getAIGold()));
 	}
 
 }

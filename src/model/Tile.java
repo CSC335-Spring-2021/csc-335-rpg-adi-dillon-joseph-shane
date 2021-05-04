@@ -1,6 +1,5 @@
 package model;
 
-import city.City;
 import units.Unit;
 
 public class Tile {

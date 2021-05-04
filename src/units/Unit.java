@@ -16,6 +16,7 @@ public abstract class Unit {
 	private int x, y;
 	private Nation nation;
 	private double health;
+	protected int buildCost;
 	private final double attackPoints;
 	private final double defensePoints;
 	private final int movesPerTurn;
@@ -39,6 +40,7 @@ public abstract class Unit {
 		this.y = y;
 		this.nation = nation;
 		this.health = 100;
+		this.buildCost = 0;
 		this.attackPoints = attackPoints;
 		this.defensePoints = defensePoints;
 		this.movesPerTurn = movesPerTurn;
@@ -53,6 +55,10 @@ public abstract class Unit {
 
 	public int getY() {
 		return y;
+	}
+	
+	public int getBuildCost() {
+		return this.buildCost;
 	}
 
 	public void setPositition(int x, int y) {
