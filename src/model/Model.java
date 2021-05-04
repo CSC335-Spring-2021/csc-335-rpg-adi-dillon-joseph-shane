@@ -45,15 +45,15 @@ public class Model extends Observable {
 				}
 			}
 		}
+		this.map[0][0].setLandType(Tile.DRY_LAND);
 		this.map[0][0].setUnit(new Settler(0, 0, BLUE_NATION));
-		this.map[1][0].setUnit(new Settler(0, 1, BLUE_NATION));
-		this.map[0][1].setUnit(new Settler(1, 0, BLUE_NATION));
-		this.map[1][1].setUnit(new FootSoldier(1, 1, BLUE_NATION));
-		
+		this.map[0][1].setLandType(Tile.DRY_LAND);
+		this.map[0][1].setUnit(new FootSoldier(1, 0, BLUE_NATION));
+
+		this.map[14][14].setLandType(Tile.DRY_LAND);
 		this.map[14][14].setUnit(new Settler(14, 14, RED_NATION));
-		this.map[13][14].setUnit(new Settler(14, 13, RED_NATION));
-		this.map[14][13].setUnit(new Settler(13, 14, RED_NATION));
-		this.map[13][13].setUnit(new FootSoldier(13, 13, RED_NATION));
+		this.map[14][13].setLandType(Tile.DRY_LAND);
+		this.map[14][13].setUnit(new FootSoldier(13, 14, RED_NATION));
 	}
 
 	public Tile getTileAt(int col, int row) {
@@ -69,8 +69,8 @@ public class Model extends Observable {
 	}
 
 	public void endTurn() {
-		currentTurn.addGold(25*currentTurn.getCityCount()); 
-		currentTurn.addGold(5*currentTurn.getUnitList().size());// Add revenue based on number of cities and units
+		currentTurn.addGold(25 * currentTurn.getCityCount());
+		currentTurn.addGold(5 * currentTurn.getUnitList().size());// Add revenue based on number of cities and units
 		currentTurn = currentTurn.enemyNation;
 	}
 
