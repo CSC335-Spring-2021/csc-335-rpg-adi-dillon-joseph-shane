@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -281,8 +282,28 @@ public class RPGView extends Application implements Observer {
 	 */
 	@Override
 	public void update(Observable o, Object arg) {
+		System.out.println(arg);
 		if (arg == null) {
-			System.exit(1);
+			Alert gameOver = new Alert(AlertType.CONFIRMATION);
+			gameOver.setHeaderText("Game Over!");
+			gameOver.setTitle("Game Over!");
+			if(Model.RED_NATION.getUnitList().isEmpty()) {
+				gameOver.setContentText("You Won!");
+			} else {
+				gameOver.setContentText("You Lost!");
+			}
+			gameOver.setGraphic(null);
+			((Button) gameOver.getDialogPane().lookupButton(ButtonType.OK)).setText("New Game");
+			((Button) gameOver.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("Quit");
+			gameOver.showAndWait().ifPresent(response -> {
+				if (response.getText().equals("OK")) {
+					this.controller.newGame();
+					this.controller.updateView();
+					this.controller.takeTurn();
+				} else if (response.getText().equals("Cancel")) {
+					System.exit(0);
+				}
+			});
 		} else {
 			Tile[][] map = (Tile[][]) arg;
 			for (int i = 0; i < Model.MAP_SIZE; i++) {

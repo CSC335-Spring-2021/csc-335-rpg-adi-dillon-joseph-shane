@@ -60,8 +60,11 @@ public class RPGController {
 
 	public boolean canBuildCity(int col, int row) {
 		Tile tile = this.model.getTileAt(col, row);
-		return tile.getLandType().equals(Tile.DRY_LAND) && tile.getUnit() instanceof Settler && tile.getCity() == null
-				&& this.model.getCurrentTurn().getGoldAmount() >= this.model.getCurrentTurn().getCityCost();
+		System.out.println(tile.getLandType());
+		return tile.getLandType().equals(Tile.DRY_LAND) && 
+				tile.getUnit() instanceof Settler && 
+				tile.getCity() == null && 
+				this.model.getCurrentTurn().getGoldAmount() >= this.model.getCurrentTurn().getCityCost();
 	}
 
 	public boolean canAddUnit(int col, int row) {
@@ -241,6 +244,10 @@ public class RPGController {
 	private boolean isGameOver() {
 		System.out.println(Model.RED_NATION.getUnitList());
 		return Model.RED_NATION.getUnitList().isEmpty() || Model.BLUE_NATION.getUnitList().isEmpty();
+	}
+	
+	public void newGame() {
+		this.model.newGame();
 	}
 
 	public Tile getTile(int col, int row) {

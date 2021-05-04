@@ -11,18 +11,23 @@ public class Model extends Observable {
 
 	private Tile[][] map;
 	public static final int MAP_SIZE = 15;
-	public static final Nation BLUE_NATION = new Nation("Blue Nation", false);
-	public static final Nation RED_NATION = new Nation("Red Nation", true);
+	public static Nation BLUE_NATION = new Nation("Blue Nation", false);
+	public static Nation RED_NATION = new Nation("Red Nation", true);
 	private Nation currentTurn;
 
 	public Model(Observer view) {
-		// Set up nations
+		this.addObserver(view);
+		newGame();
+	}
+
+	public void newGame() {// Set up nations
+		BLUE_NATION = new Nation("Blue Nation", false);
+		RED_NATION = new Nation("Red Nation", true);
 		BLUE_NATION.enemyNation = RED_NATION;
 		RED_NATION.enemyNation = BLUE_NATION;
 		currentTurn = BLUE_NATION;
 
 		// Add view as observer of model
-		this.addObserver(view);
 
 		// Create a map where every tile
 		// has no nation affiliation and is dry land
