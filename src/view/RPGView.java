@@ -5,18 +5,18 @@ import java.util.Observer;
 
 import controller.RPGController;
 import javafx.application.Application;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -145,22 +145,18 @@ public class RPGView extends Application implements Observer {
 		
 		Label playerText = new Label("You");
 		playerText.setFont(new Font(20));
-		playerText.setTextFill(Color.WHITE);
 		
 		this.playerGoldLabel = new Label("Gold: " + String.valueOf(this.controller.getPlayerGold()));
 		this.playerGoldLabel.setFont(new Font(15));
-		this.playerGoldLabel.setTextFill(Color.WHITE);
 			
 		statsBar.add(playerText,0,0);
 		statsBar.add(this.playerGoldLabel,0,1);
 		
 		Label AIText = new Label("AI");
 		AIText.setFont(new Font(20));
-		AIText.setTextFill(Color.WHITE);
 		
 		this.AIGoldLabel = new Label("Gold: " + String.valueOf(this.controller.getAIGold()));
 		this.AIGoldLabel.setFont(new Font(15));
-		this.AIGoldLabel.setTextFill(Color.WHITE);
 		
 		statsBar.add(AIText,1,0);
 		statsBar.add(this.AIGoldLabel,1,1);
@@ -198,7 +194,7 @@ public class RPGView extends Application implements Observer {
 
 	private void gridClicked(MouseEvent event) {
 		int mouseX = (int) ((event.getSceneX()) / 40);
-		int mouseY = (int) ((event.getSceneY() - 35)  / 40);
+		int mouseY = (int) ((event.getSceneY() - 51)  / 40);
 
 		if (this.mouseX == mouseX && this.mouseY == mouseY) {
 			deselectTile();
