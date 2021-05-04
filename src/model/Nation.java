@@ -11,14 +11,18 @@ public class Nation {
 	public Nation enemyNation;
 	private int gold;
 	private int cityCount;
+	private int cityCost;
 	private final boolean isAI;
 	private final ArrayList<Unit> units;
+	private final ArrayList<City> cities;
 
 	public Nation(String name, boolean isAI) {
 		this.name = name;
 		this.isAI = isAI;
 		this.units = new ArrayList<>();
+		this.cities = new ArrayList<>();
 		this.gold = 500;
+		this.cityCost = 200;
 		this.cityCount = 0;
 	}
 
@@ -28,6 +32,10 @@ public class Nation {
 	
 	public List<Unit> getUnitList() {
 		return units;
+	}
+	
+	public List<City> getCitiesList() {
+		return cities;
 	}
 	
 	public int getGoldAmount() {
@@ -46,11 +54,17 @@ public class Nation {
 		return this.cityCount;
 	}
 	
+	public int getCityCost() {
+		return this.cityCost;
+	}
+	
 	public void increaseCityCount(int amt) {
 		this.cityCount += amt;
+		cityCost *= 2;
 	}
 	
 	public void decreaseCityCount(int amt) {
 		this.cityCount -= amt;
+		cityCost /= 2;
 	}
 }
