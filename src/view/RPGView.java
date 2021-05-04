@@ -41,8 +41,19 @@ public class RPGView extends Application implements Observer {
 	private ImageView[][] highlightImages;
 	FlowPane cityActions;
 	FlowPane settlerActions;
-	private final Image highlight = new Image("/res/highlight.png");
 	private GridPane gridPane;
+	
+	// Some images to use
+	public static final Image FOOT_SOLDIER;
+	public static final Image ARCHER;
+	public static final Image SETTLER;
+	private final Image highlight = new Image("/res/highlight.png");
+	
+	static {
+		FOOT_SOLDIER = new Image("/res/Infantry.png", 40, 40, false, false);
+		ARCHER = new Image("/res/Scout.png", 40, 40, false, false);
+		SETTLER = new Image("/res/Settler.png", 40, 40, false, false);
+	}
 
 	@Override
 	public void start(Stage stage) throws Exception {
