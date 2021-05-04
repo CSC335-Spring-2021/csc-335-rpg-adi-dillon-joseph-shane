@@ -77,4 +77,9 @@ public class Model extends Observable {
 		setChanged();
 		notifyObservers(this.map);
 	}
+	
+	public void gameOver() {
+		setChanged();
+		notifyObservers(null);
+	}
 }
