@@ -231,7 +231,7 @@ public class RPGView extends Application implements Observer {
 	private void createCity() {
 		if (this.controller.canBuildCity(mouseX, mouseY)) {
 			Alert confirm = new Alert(AlertType.CONFIRMATION);
-			confirm.setContentText("Are you sure you'd like to build a city here for 500 gold?");
+			confirm.setContentText("Are you sure you'd like to build a city here for " + Model.BLUE_NATION.getCityCost() + " gold?");
 			confirm.showAndWait().ifPresent(response -> {
 				if (response.getText().equals("OK")) {
 					this.controller.buildCity(this.mouseX, this.mouseY);
@@ -253,7 +253,7 @@ public class RPGView extends Application implements Observer {
 	private void recruitUnit(String unit) {
 		if (this.controller.canAddUnit(mouseX, mouseY)) {
 			Alert confirm = new Alert(AlertType.CONFIRMATION);
-			confirm.setContentText("Are you sure you'd like to recruit a " + unit + " for 50 gold?");
+			confirm.setContentText("Are you sure you'd like to recruit a " + unit + "?");
 			confirm.showAndWait().ifPresent(response -> {
 				if (response.getText().equals("OK")) {
 					this.controller.addUnit(mouseX, mouseY, unit);
