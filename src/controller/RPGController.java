@@ -2,7 +2,7 @@ package controller;
 
 import java.util.Observer;
 
-import city.City;
+import model.City;
 import model.Model;
 import model.Nation;
 import model.Tile;
@@ -32,6 +32,15 @@ public class RPGController {
 			return true;
 		}
 	}
+	
+	public int getPlayerGold() {
+		return Model.BLUE_NATION.getGoldAmount();
+	}
+	
+	public int getAIGold() {
+		return Model.RED_NATION.getGoldAmount();
+	}
+
 
 	public void buildCity(int col, int row) {
 		Tile tile = this.model.getTileAt(col, row);
@@ -41,6 +50,8 @@ public class RPGController {
 		tile.setNation(currentTurn); // Land now belongs to current turn user
 		City city = new City(currentTurn.name + " city", 0, currentTurn);
 		tile.setCity(city);
+		currentTurn.removeGold(city.getBuildCost());
+		currentTurn.increaseCityCount(1);
 		model.endTurn();
 		this.model.updateView();
 	}
@@ -58,15 +69,19 @@ public class RPGController {
 
 	public void addUnit(int col, int row, String type) {
 		Tile tile = this.model.getTileAt(col, row);
+		Nation currentTurn = this.model.getCurrentTurn();
 		if (tile.getUnit() == null) {
-
+			
+			Unit unit = null;
 			if (type.equals("settler")) {
-				tile.setUnit(new Settler(col, row, this.model.getCurrentTurn()));
+				unit = new Settler(col, row,currentTurn );
 			} else if (type.equals("foot_soilder")) {
-				tile.setUnit(new FootSoldier(col, row, this.model.getCurrentTurn()));
+				unit = new FootSoldier(col, row,currentTurn );
 			} else if (type.equals("archer")) {
-				tile.setUnit(new Archer(col, row, this.model.getCurrentTurn()));
+				unit = new Archer(col, row,currentTurn );
 			}
+			tile.setUnit(unit);
+			currentTurn.removeGold(unit.getBuildCost());
 			model.endTurn();
 			this.model.updateView();
 		}
