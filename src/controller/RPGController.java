@@ -49,6 +49,7 @@ public class RPGController {
 		Tile tile = this.model.getTileAt(col, row);
 		Nation currentTurn = model.getCurrentTurn();
 
+		tile.getUnit().getNation().getUnitList().remove(tile.getUnit());
 		tile.setUnit(null); // Remove the settler
 		tile.setNation(currentTurn); // Land now belongs to current turn user
 		City city = new City(col, row, currentTurn.name + " city", 0, currentTurn);
@@ -59,8 +60,11 @@ public class RPGController {
 
 	public boolean canBuildCity(int col, int row) {
 		Tile tile = this.model.getTileAt(col, row);
-		return tile.getLandType().equals(Tile.DRY_LAND) && tile.getUnit() instanceof Settler && tile.getCity() == null
-				&& this.model.getCurrentTurn().getGoldAmount() >= this.model.getCurrentTurn().getCityCost();
+		System.out.println(tile.getLandType());
+		return tile.getLandType().equals(Tile.DRY_LAND) && 
+				tile.getUnit() instanceof Settler && 
+				tile.getCity() == null && 
+				this.model.getCurrentTurn().getGoldAmount() >= this.model.getCurrentTurn().getCityCost();
 	}
 
 	public boolean canAddUnit(int col, int row) {
@@ -156,6 +160,9 @@ public class RPGController {
 		this.model.updateView();
 
 		takeTurn();
+		if(isGameOver()) {
+			this.model.gameOver();
+		}
 	}
 
 	/*-
@@ -218,7 +225,7 @@ public class RPGController {
 
 		// Move a unit randomly
 		for (Unit friendlyUnit : model.getCurrentTurn().getUnitList()) {
-			for (int i = 0; i < 100; i++) {
+			for (int i = 0; i < 4; i++) {
 				int moveX = (int) ((Math.random() * 2 - 1) * friendlyUnit.getMovesPerTurn());
 				int moveY = (int) ((Math.random() * 2 - 1) * friendlyUnit.getMovesPerTurn());
 				selectUnit(friendlyUnit.getX(), friendlyUnit.getY());
@@ -232,6 +239,15 @@ public class RPGController {
 		}
 		System.out.println("AI has no moves");
 		endTurn();
+	}
+
+	private boolean isGameOver() {
+		System.out.println(Model.RED_NATION.getUnitList());
+		return Model.RED_NATION.getUnitList().isEmpty() || Model.BLUE_NATION.getUnitList().isEmpty();
+	}
+	
+	public void newGame() {
+		this.model.newGame();
 	}
 
 	public Tile getTile(int col, int row) {
