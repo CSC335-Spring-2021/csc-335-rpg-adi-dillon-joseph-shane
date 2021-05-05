@@ -78,6 +78,25 @@ public class RPGView extends Application implements Observer {
 	/** The tile highlight image */
 	private final Image highlight = new Image("/res/highlight.png");
 	
+	/** The image for the foot soldier */
+	public static Image RED_KNIGHT;
+	/** The image for the foot soldier */
+	public static Image BLUE_KNIGHT;
+	/** The image for the foot soldier */
+	public static Image RED_ARCHER;
+	/** The image for the foot soldier */
+	public static Image BLUE_ARCHER;
+	/** The image for the foot soldier */
+	public static Image RED_SETTLER;
+	
+	/** The image for the foot soldier */
+	public static Image BLUE_SETTLER;
+	/** The image for the foot soldier */
+	public static Image RED_CITY;
+	/** The image for the foot soldier */
+	public static Image BLUE_CITY;
+	
+	
 	/**
 	 * Creates a new view with the appropriate images for each unit.
 	 */
@@ -92,7 +111,7 @@ public class RPGView extends Application implements Observer {
 		RED_KNIGHT = new Image("/res/red_knight.png", 40, 40, false, false);
 		BLUE_KNIGHT = new Image("/res/blue_knight.png", 40, 40, false, false);
 		RED_ARCHER = new Image("/res/red_archer.png", 40, 40, false, false);
-		BLUE_ARCHER = new Image("/res/blue_arhcer.png", 40, 40, false, false);
+		BLUE_ARCHER = new Image("/res/blue_archer.png", 40, 40, false, false);
 		RED_SETTLER = new Image("/res/red_settler.png", 40, 40, false, false);
 		BLUE_SETTLER = new Image("/res/blue_settler.png", 40, 40, false, false);
 		RED_CITY = new Image("/res/red_city.png", 40, 40, false, false);
