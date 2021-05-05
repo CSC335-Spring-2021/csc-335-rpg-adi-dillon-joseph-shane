@@ -43,9 +43,9 @@ public class City {
 		this.nation = nation;
 
 		if (nation == Model.BLUE_NATION) {
-			this.sprite = new Image("/res/blue_nation_city.png", 40, 40, false, false);
+			this.sprite = new Image("/res/blue_city.png", 40, 40, false, false);
 		} else {
-			this.sprite = new Image("/res/red_nation_city.png", 40, 40, false, false);
+			this.sprite = new Image("/res/red_city.png", 40, 40, false, false);
 		}
 		nation.getCitiesList().add(this);
 	}

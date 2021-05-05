@@ -78,9 +78,17 @@ public class RPGView extends Application implements Observer {
 	 * Creates a new view with the appropriate images for each unit.
 	 */
 	public RPGView() {
-		FOOT_SOLDIER = new Image("/res/Infantry.png", 40, 40, false, false);
-		ARCHER = new Image("/res/Scout.png", 40, 40, false, false);
-		SETTLER = new Image("/res/Settler.png", 40, 40, false, false);
+		RED_KNIGHT = new Image("/res/red_knight.png", 40, 40, false, false);
+		BLUE_KNIGHT = new Image("/res/blue_knight.png", 40, 40, false, false);
+		RED_ARCHER = new Image("/res/red_archer.png", 40, 40, false, false);
+		BLUE_ARCHER = new Image("/res/blue_arhcer.png", 40, 40, false, false);
+		RED_SETTLER = new Image("/res/red_settler.png", 40, 40, false, false);
+		BLUE_SETTLER = new Image("/res/blue_settler.png", 40, 40, false, false);
+		RED_CITY = new Image("/res/red_city.png", 40, 40, false, false);
+		BLUE_CITY = new Image("/res/blue_city.png", 40, 40, false, false);
+//		FOOT_SOLDIER = new Image("/res/Infantry.png", 40, 40, false, false);
+//		ARCHER = new Image("/res/Scout.png", 40, 40, false, false);
+//		SETTLER = new Image("/res/Settler.png", 40, 40, false, false);
 	}
 
 	/**
