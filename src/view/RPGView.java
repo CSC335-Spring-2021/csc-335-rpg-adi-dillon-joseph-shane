@@ -29,33 +29,63 @@ import model.Model;
 import model.Tile;
 import units.Settler;
 
+/**
+ * The view for the game.
+ * 
+ * @author Adi, Joesph, Shane, Dillion
+ *
+ */
 @SuppressWarnings("deprecation")
 public class RPGView extends Application implements Observer {
+	/** The borderpane root of the scene */
 	private BorderPane root;
+	/** The label for the player's gold amount */
 	private Label playerGoldLabel;
+	/** The label for the AI's gold amount */
 	private Label AIGoldLabel;
-	private int mouseX = -1, mouseY = -1;
+	/** The last mouseX position */
+	private int mouseX = -1;
+	/** The last mouseY position */
+	private int mouseY = -1;
+	/** The controller this view relies on */
 	private RPGController controller;
+	/** The rectangles used for the map tiles */
 	private Rectangle[][] backgroundRectangles;
+	/** The city sprite for each index position */
 	private ImageView[][] cityImages;
+	/** The unit sprite for each index position */
 	private ImageView[][] unitImages;
+	/** The tile highlight sprite for each index position */
 	private ImageView[][] highlightImages;
+	/** The pane with actions associated with a tile that has a city */
 	FlowPane cityActions;
+	/** The pane with actions associated with a tile that has a settler */
 	FlowPane settlerActions;
+	/** The gridpane for the map */
 	private GridPane gridPane;
 
 	// Some images to use
+	/** The image for the foot soldier */
 	public static Image FOOT_SOLDIER;
+	/** The image for the archer */
 	public static Image ARCHER;
+	/** The image for the settler */
 	public static Image SETTLER;
+	/** The tile highlight image */
 	private final Image highlight = new Image("/res/highlight.png");
 
+	/**
+	 * Creates a new view with the appropriate images for each unit.
+	 */
 	public RPGView() {
 		FOOT_SOLDIER = new Image("/res/Infantry.png", 40, 40, false, false);
 		ARCHER = new Image("/res/Scout.png", 40, 40, false, false);
 		SETTLER = new Image("/res/Settler.png", 40, 40, false, false);
 	}
 
+	/**
+	 * Starts the application
+	 */
 	@Override
 	public void start(Stage stage) throws Exception {
 		// Create the controller this view is based on
@@ -106,6 +136,7 @@ public class RPGView extends Application implements Observer {
 		actionMenu.setLeft(new Label("Actions: "));
 		StackPane actionsStackPane = new StackPane();
 
+		// The pane for settler and city actions
 		settlerActions = new FlowPane();
 		Button buildCity = new Button("Build City");
 		buildCity.setOnMouseClicked(e -> createCity());
@@ -146,9 +177,15 @@ public class RPGView extends Application implements Observer {
 		stage.show(); // Show the stage
 	}
 
+	/**
+	 * Create the stats bar at the top
+	 * 
+	 * @param root The root to add the stats bar to
+	 */
 	private void addStatsBar(BorderPane root) {
 		GridPane statsBar = new GridPane();
 
+		// We only need 2 columns
 		for (int i = 0; i < 2; i++) {
 			ColumnConstraints colConstraint = new ColumnConstraints();
 			colConstraint.setPercentWidth(50);
@@ -177,6 +214,12 @@ public class RPGView extends Application implements Observer {
 		root.setTop(statsBar);
 	}
 
+	/**
+	 * Selects a tile and highlights it if the tile selected is valid
+	 * 
+	 * @param mouseX The x coordinate from javafx
+	 * @param mouseY The y vlae from javafx
+	 */
 	private void selectTile(int mouseX, int mouseY) {
 		this.mouseX = mouseX;
 		this.mouseY = mouseY;
@@ -194,6 +237,9 @@ public class RPGView extends Application implements Observer {
 		}
 	}
 
+	/**
+	 * Deselects the previously selected tile
+	 */
 	private void deselectTile() {
 		cityActions.setVisible(false);
 		settlerActions.setVisible(false);
@@ -204,6 +250,11 @@ public class RPGView extends Application implements Observer {
 		this.mouseY = -1;
 	}
 
+	/**
+	 * Called when a tile is clciekd
+	 * 
+	 * @param event The mouse event
+	 */
 	private void gridClicked(MouseEvent event) {
 		int mouseX = (int) ((event.getSceneX()) / 40);
 		int mouseY = (int) ((event.getSceneY() - 51) / 40);
@@ -229,6 +280,9 @@ public class RPGView extends Application implements Observer {
 		}
 	}
 
+	/**
+	 * Creates a city at the selected tile, if it is valid to. Asks for confirmation
+	 */
 	private void createCity() {
 		if (this.controller.canBuildCity(mouseX, mouseY)) {
 			Alert confirm = new Alert(AlertType.CONFIRMATION);
@@ -252,6 +306,12 @@ public class RPGView extends Application implements Observer {
 		}
 	}
 
+	/**
+	 * Recruits a unit of the specified type at the selected tile, if valid. Asks
+	 * for confirmation.
+	 * 
+	 * @param unit The unit to recruit
+	 */
 	private void recruitUnit(String unit) {
 		if (this.controller.canAddUnit(mouseX, mouseY)) {
 			Alert confirm = new Alert(AlertType.CONFIRMATION);

@@ -11,14 +11,33 @@ import units.FootSoldier;
 import units.Settler;
 import units.Unit;
 
+/**
+ * This class represents the controller for the game. It provides various
+ * methods that the view can use to get and set information about the game
+ * 
+ * @author Adi, Joesph, Shane, Dillion
+ */
 @SuppressWarnings("deprecation")
 public class RPGController {
+	/** The model this controller operates on*/
 	private final Model model;
-
+	
+	/**
+	 * Creates an instance of the controller
+	 * 
+	 * @param view The view that should observe the model
+	 */
 	public RPGController(Observer view) {
 		model = new Model(view);
 	}
 
+	/**
+	 * Checks if the given tile can be selected by whoever's turn it is
+	 * 
+	 * @param col The column index of the tile
+	 * @param row The row index of the tile
+	 * @return true if th current tile can be selected
+	 */
 	public boolean selectUnit(int col, int row) {
 		if (model.getTileAt(col, row).getCity() != null
 				&& model.getTileAt(col, row).getCity().getNation() == model.getCurrentTurn()) {
@@ -37,14 +56,29 @@ public class RPGController {
 		}
 	}
 
+	/**
+	 * Get the player's gold amount
+	 * @return The amount of gold the player has
+	 */
 	public int getPlayerGold() {
 		return Model.BLUE_NATION.getGoldAmount();
 	}
 
+	/**
+	 * Get the AI's gold amount
+	 * @return The amount of gold the AI has
+	 */
 	public int getAIGold() {
 		return Model.RED_NATION.getGoldAmount();
 	}
 
+	/**
+	 * Builds a city on the tile at the given coordinates.
+	 * Make sure the city can be built before this is called.
+	 * 
+	 * @param col The column index of the tile
+	 * @param row The row index of the tile
+	 */
 	public void buildCity(int col, int row) {
 		Tile tile = this.model.getTileAt(col, row);
 		Nation currentTurn = model.getCurrentTurn();
@@ -52,27 +86,51 @@ public class RPGController {
 		tile.getUnit().getNation().getUnitList().remove(tile.getUnit());
 		tile.setUnit(null); // Remove the settler
 		tile.setNation(currentTurn); // Land now belongs to current turn user
-		City city = new City(col, row, currentTurn.name + " city", 0, currentTurn);
+		City city = new City(col, row, currentTurn.name + " city", currentTurn);
 		tile.setCity(city);
 		currentTurn.removeGold(currentTurn.getCityCost());
 		currentTurn.increaseCityCount(1);
 	}
 
+	/**
+	 * Checks if a city can be built by whoever's turn it is on the
+	 * given tile
+	 * 
+	 * @param col The column index of the tile
+	 * @param row The row index of the tile
+	 * @return true if a city can be built and false otherwise
+	 */
 	public boolean canBuildCity(int col, int row) {
 		Tile tile = this.model.getTileAt(col, row);
 		System.out.println(tile.getLandType());
-		return tile.getLandType().equals(Tile.DRY_LAND) && 
-				tile.getUnit() instanceof Settler && 
-				tile.getCity() == null && 
-				this.model.getCurrentTurn().getGoldAmount() >= this.model.getCurrentTurn().getCityCost();
+		return tile.getLandType().equals(Tile.DRY_LAND) && tile.getUnit() instanceof Settler && tile.getCity() == null
+				&& this.model.getCurrentTurn().getGoldAmount() >= this.model.getCurrentTurn().getCityCost();
 	}
 
+	/**
+	 * Checks if a unit can be added by whoever's turn it is on the
+	 * given tile
+	 * 
+	 * @param col The column index of the tile
+	 * @param row The row index of the tile
+	 * @return true if it can be added and false otherwise
+	 */
 	public boolean canAddUnit(int col, int row) {
 		Tile tile = this.model.getTileAt(col, row);
 		Nation tileNation = tile.getNation();
 		return this.model.getCurrentTurn() == tileNation && tile.getUnit() == null;
 	}
 
+
+	/**
+	 * Adds a unit of the specified type at the specified index. Make sure to
+	 * check that a unit can be added before calling this
+	 * 
+	 * @param col The column index of the tile
+	 * @param row The row index of the tile
+	 * @param type The type of unit to build. "settler", "foot_soilder", or "archer".
+	 * @return true if the unit was added and false otherwise
+	 */
 	public boolean addUnit(int col, int row, String type) {
 		Tile tile = this.model.getTileAt(col, row);
 		Nation currentTurn = this.model.getCurrentTurn();
@@ -97,6 +155,15 @@ public class RPGController {
 		}
 	}
 
+	/**
+	 * Moves a unit from one tile to another
+	 * 
+	 * @param fromCol The current column index
+	 * @param fromRow The current row index
+	 * @param toCol The column index to  move to
+	 * @param toRow The row index to move to
+	 * @return true if the unit moved and false otherwise
+	 */
 	public boolean moveUnit(int fromCol, int fromRow, int toCol, int toRow) {
 		final Tile fromTile = model.getTileAt(fromCol, fromRow);
 		final Tile toTile = model.getTileAt(toCol, toRow);
@@ -152,7 +219,7 @@ public class RPGController {
 		}
 	}
 
-	/*
+	/**
 	 * Ends the turn for the nation, and calls the other nation to take their turn
 	 */
 	public void endTurn() {
@@ -160,12 +227,12 @@ public class RPGController {
 		this.model.updateView();
 
 		takeTurn();
-		if(isGameOver()) {
+		if (isGameOver()) {
 			this.model.gameOver();
 		}
 	}
 
-	/*-
+	/**
 	 * If the nation is not AI controlled, does nothing
 	 * 
 	 * If the nation is AI controlled, will first check:
@@ -241,19 +308,38 @@ public class RPGController {
 		endTurn();
 	}
 
+	/**
+	 * Checks if the game is over. The game is over when either the AI or the player
+	 * has no units left.
+	 * 
+	 * @return true if the game is over and false otherwise 
+	 */
 	private boolean isGameOver() {
 		System.out.println(Model.RED_NATION.getUnitList());
 		return Model.RED_NATION.getUnitList().isEmpty() || Model.BLUE_NATION.getUnitList().isEmpty();
 	}
-	
+
+	/**
+	 * Creates a new game
+	 */
 	public void newGame() {
 		this.model.newGame();
 	}
 
+	/**
+	 * Gets the tile at the given index
+	 * 
+	 * @param col The column index
+	 * @param row The row index
+	 * @return The tile
+	 */
 	public Tile getTile(int col, int row) {
 		return model.getTileAt(col, row);
 	}
 
+	/**
+	 * Asks the model to update the view
+	 */
 	public void updateView() {
 		this.model.updateView();
 	}
