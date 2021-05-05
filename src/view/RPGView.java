@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -42,14 +43,14 @@ public class RPGView extends Application implements Observer {
 	FlowPane cityActions;
 	FlowPane settlerActions;
 	private GridPane gridPane;
-	
+
 	// Some images to use
-	public static final Image FOOT_SOLDIER;
-	public static final Image ARCHER;
-	public static final Image SETTLER;
+	public static Image FOOT_SOLDIER;
+	public static Image ARCHER;
+	public static Image SETTLER;
 	private final Image highlight = new Image("/res/highlight.png");
-	
-	static {
+
+	public RPGView() {
 		FOOT_SOLDIER = new Image("/res/Infantry.png", 40, 40, false, false);
 		ARCHER = new Image("/res/Scout.png", 40, 40, false, false);
 		SETTLER = new Image("/res/Settler.png", 40, 40, false, false);
@@ -96,7 +97,7 @@ public class RPGView extends Application implements Observer {
 		}
 		gridPane.setOnMouseClicked(event -> gridClicked(event));
 		root.setCenter(gridPane);
-		
+
 		// Adding the gold amounts to the top
 		addStatsBar(root);
 
@@ -124,7 +125,9 @@ public class RPGView extends Application implements Observer {
 		actionsStackPane.getChildren().add(cityActions);
 
 		actionMenu.setCenter(actionsStackPane);
-		actionMenu.setRight(new Button("Skip turn"));
+		Button skipTurn = new Button("Skip turn");
+		skipTurn.setOnMouseClicked(e -> this.controller.endTurn());
+		actionMenu.setRight(skipTurn);
 		root.setBottom(actionMenu);
 		cityActions.setVisible(false);
 		settlerActions.setVisible(false);
@@ -142,7 +145,7 @@ public class RPGView extends Application implements Observer {
 
 		stage.show(); // Show the stage
 	}
-	
+
 	private void addStatsBar(BorderPane root) {
 		GridPane statsBar = new GridPane();
 
@@ -152,27 +155,25 @@ public class RPGView extends Application implements Observer {
 			colConstraint.setHalignment(HPos.CENTER);
 			statsBar.getColumnConstraints().add(colConstraint);
 		}
-		
-		
+
 		Label playerText = new Label("You");
 		playerText.setFont(new Font(20));
-		
+
 		this.playerGoldLabel = new Label("Gold: " + String.valueOf(this.controller.getPlayerGold()));
 		this.playerGoldLabel.setFont(new Font(15));
-			
-		statsBar.add(playerText,0,0);
-		statsBar.add(this.playerGoldLabel,0,1);
-		
+
+		statsBar.add(playerText, 0, 0);
+		statsBar.add(this.playerGoldLabel, 0, 1);
+
 		Label AIText = new Label("AI");
 		AIText.setFont(new Font(20));
-		
+
 		this.AIGoldLabel = new Label("Gold: " + String.valueOf(this.controller.getAIGold()));
 		this.AIGoldLabel.setFont(new Font(15));
-		
-		statsBar.add(AIText,1,0);
-		statsBar.add(this.AIGoldLabel,1,1);
-		
-		
+
+		statsBar.add(AIText, 1, 0);
+		statsBar.add(this.AIGoldLabel, 1, 1);
+
 		root.setTop(statsBar);
 	}
 
@@ -205,7 +206,7 @@ public class RPGView extends Application implements Observer {
 
 	private void gridClicked(MouseEvent event) {
 		int mouseX = (int) ((event.getSceneX()) / 40);
-		int mouseY = (int) ((event.getSceneY() - 51)  / 40);
+		int mouseY = (int) ((event.getSceneY() - 51) / 40);
 
 		if (this.mouseX == mouseX && this.mouseY == mouseY) {
 			deselectTile();
@@ -231,7 +232,8 @@ public class RPGView extends Application implements Observer {
 	private void createCity() {
 		if (this.controller.canBuildCity(mouseX, mouseY)) {
 			Alert confirm = new Alert(AlertType.CONFIRMATION);
-			confirm.setContentText("Are you sure you'd like to build a city here for " + Model.BLUE_NATION.getCityCost() + " gold?");
+			confirm.setContentText(
+					"Are you sure you'd like to build a city here for " + Model.BLUE_NATION.getCityCost() + " gold?");
 			confirm.showAndWait().ifPresent(response -> {
 				if (response.getText().equals("OK")) {
 					this.controller.buildCity(this.mouseX, this.mouseY);
@@ -280,29 +282,53 @@ public class RPGView extends Application implements Observer {
 	 */
 	@Override
 	public void update(Observable o, Object arg) {
-		Tile[][] map = (Tile[][]) arg;
-		for (int i = 0; i < Model.MAP_SIZE; i++) {
-			for (int j = 0; j < Model.MAP_SIZE; j++) {
+		System.out.println(arg);
+		if (arg == null) {
+			Alert gameOver = new Alert(AlertType.CONFIRMATION);
+			gameOver.setHeaderText("Game Over!");
+			gameOver.setTitle("Game Over!");
+			if (Model.RED_NATION.getUnitList().isEmpty()) {
+				gameOver.setContentText("You Won!");
+			} else {
+				gameOver.setContentText("You Lost!");
+			}
+			gameOver.setGraphic(null);
+			((Button) gameOver.getDialogPane().lookupButton(ButtonType.OK)).setText("New Game");
+			((Button) gameOver.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("Quit");
+			gameOver.showAndWait().ifPresent(response -> {
+				if (response.getText().equals("OK")) {
+					this.controller.newGame();
+					this.controller.updateView();
+					this.controller.takeTurn();
+				} else if (response.getText().equals("Cancel")) {
+					System.exit(0);
+				}
+			});
+		} else {
+			Tile[][] map = (Tile[][]) arg;
+			for (int i = 0; i < Model.MAP_SIZE; i++) {
+				for (int j = 0; j < Model.MAP_SIZE; j++) {
 
-				Tile current = map[i][j];
-				if (current.getLandType().equals(Tile.DRY_LAND)) {
-					this.backgroundRectangles[i][j].setFill(Color.GREEN);
-				} else if (current.getLandType().equals(Tile.WATER)) {
-					this.backgroundRectangles[i][j].setFill(Color.BLUE);
-				}
-				if (current.getUnit() != null) {
-					this.unitImages[i][j].setImage(current.getUnit().getSprite());
-				} else {
-					this.unitImages[i][j].setImage(null);
-				}
-				if (current.getCity() != null) {
-					this.cityImages[i][j].setImage(current.getCity().getSprite());
+					Tile current = map[i][j];
+					if (current.getLandType().equals(Tile.DRY_LAND)) {
+						this.backgroundRectangles[i][j].setFill(Color.GREEN);
+					} else if (current.getLandType().equals(Tile.WATER)) {
+						this.backgroundRectangles[i][j].setFill(Color.BLUE);
+					}
+					if (current.getUnit() != null) {
+						this.unitImages[i][j].setImage(current.getUnit().getSprite());
+					} else {
+						this.unitImages[i][j].setImage(null);
+					}
+					if (current.getCity() != null) {
+						this.cityImages[i][j].setImage(current.getCity().getSprite());
+					}
 				}
 			}
+
+			this.playerGoldLabel.setText("Gold: " + String.valueOf(this.controller.getPlayerGold()));
+			this.AIGoldLabel.setText("Gold: " + String.valueOf(this.controller.getAIGold()));
 		}
-		
-		this.playerGoldLabel.setText("Gold: " + String.valueOf(this.controller.getPlayerGold()));
-		this.AIGoldLabel.setText("Gold: " + String.valueOf(this.controller.getAIGold()));
 	}
 
 }
