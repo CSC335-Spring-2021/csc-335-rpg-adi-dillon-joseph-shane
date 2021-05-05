@@ -1,6 +1,7 @@
 package model;
 
 import javafx.scene.image.Image;
+import view.RPGView;
 
 /**
  * This class represents a city in the game
@@ -43,9 +44,9 @@ public class City {
 		this.nation = nation;
 
 		if (nation == Model.BLUE_NATION) {
-			this.sprite = new Image("/res/blue_nation_city.png", 40, 40, false, false);
+			this.sprite = RPGView.BLUE_NATION;
 		} else {
-			this.sprite = new Image("/res/red_nation_city.png", 40, 40, false, false);
+			this.sprite = RPGView.RED_NATION;
 		}
 		nation.getCitiesList().add(this);
 	}
