@@ -42,7 +42,6 @@ public class City {
 		this.y = y;
 		this.cityName = name;
 		this.nation = nation;
-
 		if (nation == Model.BLUE_NATION) {
 			this.sprite = RPGView.BLUE_NATION;
 		} else {

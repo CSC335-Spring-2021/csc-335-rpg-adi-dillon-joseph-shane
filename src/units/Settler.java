@@ -1,5 +1,6 @@
 package units;
 
+import model.Model;
 import model.Nation;
 import view.RPGView;
 
@@ -18,7 +19,7 @@ public class Settler extends Unit {
 	 * @param nation The nation this unit is commanded by
 	 */
 	public Settler(int x, int y, Nation nation) {
-		super(x, y, nation, 0.0, 0.5, 2, 0, RPGView.SETTLER);
+		super(x, y, nation, 0.0, 0.5, 2, 0, nation == Model.BLUE_NATION ? RPGView.BLUE_SETTLER : RPGView.RED_SETTLER);
 		this.buildCost = SETTLER_BUILD_COST;
 	}
 

@@ -1,5 +1,6 @@
 package units;
 
+import model.Model;
 import model.Nation;
 import view.RPGView;
 
@@ -18,7 +19,7 @@ public class Archer extends Unit {
 	 * @param nation The nation this unit is commanded by
 	 */
 	public Archer(int x, int y, Nation nation) {
-		super(x, y, nation, 20.0, 0.75, 4, 3, RPGView.ARCHER);
+		super(x, y, nation, 20.0, 0.75, 4, 3, nation == Model.BLUE_NATION ? RPGView.BLUE_ARCHER : RPGView.RED_ARCHER);
 		this.buildCost = ARCHER_BUILD_COST;
 	}
 
