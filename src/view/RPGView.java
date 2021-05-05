@@ -45,12 +45,12 @@ public class RPGView extends Application implements Observer {
 	private GridPane gridPane;
 
 	// Some images to use
-	public static final Image FOOT_SOLDIER;
-	public static final Image ARCHER;
-	public static final Image SETTLER;
+	public static Image FOOT_SOLDIER;
+	public static Image ARCHER;
+	public static Image SETTLER;
 	private final Image highlight = new Image("/res/highlight.png");
 
-	static {
+	public RPGView() {
 		FOOT_SOLDIER = new Image("/res/Infantry.png", 40, 40, false, false);
 		ARCHER = new Image("/res/Scout.png", 40, 40, false, false);
 		SETTLER = new Image("/res/Settler.png", 40, 40, false, false);
@@ -287,7 +287,7 @@ public class RPGView extends Application implements Observer {
 			Alert gameOver = new Alert(AlertType.CONFIRMATION);
 			gameOver.setHeaderText("Game Over!");
 			gameOver.setTitle("Game Over!");
-			if(Model.RED_NATION.getUnitList().isEmpty()) {
+			if (Model.RED_NATION.getUnitList().isEmpty()) {
 				gameOver.setContentText("You Won!");
 			} else {
 				gameOver.setContentText("You Lost!");
