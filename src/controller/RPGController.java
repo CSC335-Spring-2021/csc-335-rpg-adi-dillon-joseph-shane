@@ -223,13 +223,13 @@ public class RPGController {
 	 * Ends the turn for the nation, and calls the other nation to take their turn
 	 */
 	public void endTurn() {
+		if (isGameOver()) {
+			this.model.gameOver();
+		}
 		model.endTurn();
 		this.model.updateView();
 
 		takeTurn();
-		if (isGameOver()) {
-			this.model.gameOver();
-		}
 	}
 
 	/**
