@@ -195,7 +195,7 @@ public class RPGController {
 					toUnit.setHealth(toUnit.getHealth() - fromUnit.getAttackPoints() / toUnit.getDefensePoints());
 					// Unit is killed
 					if (toUnit.getHealth() <= 0) {
-						toUnit.getNation().getUnitList().remove(toUnit);
+						toUnit.getNation().getUnitList().remove(toUnit.getNation().getUnitList().indexOf(toUnit));
 						toTile.setUnit(null);
 					}
 					return true;
@@ -223,13 +223,13 @@ public class RPGController {
 	 * Ends the turn for the nation, and calls the other nation to take their turn
 	 */
 	public void endTurn() {
+		if (isGameOver()) {
+			this.model.gameOver();
+		}
 		model.endTurn();
 		this.model.updateView();
 
 		takeTurn();
-		if (isGameOver()) {
-			this.model.gameOver();
-		}
 	}
 
 	/**
