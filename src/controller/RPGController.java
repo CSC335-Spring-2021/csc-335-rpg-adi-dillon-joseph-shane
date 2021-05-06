@@ -195,7 +195,7 @@ public class RPGController {
 					toUnit.setHealth(toUnit.getHealth() - fromUnit.getAttackPoints() / toUnit.getDefensePoints());
 					// Unit is killed
 					if (toUnit.getHealth() <= 0) {
-						toUnit.getNation().getUnitList().remove(toUnit);
+						toUnit.getNation().getUnitList().remove(toUnit.getNation().getUnitList().indexOf(toUnit));
 						toTile.setUnit(null);
 					}
 					return true;
