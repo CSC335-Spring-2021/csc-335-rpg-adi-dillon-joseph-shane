@@ -65,12 +65,6 @@ public class RPGView extends Application implements Observer {
 	private GridPane gridPane;
 
 	// Some images to use
-	/** The image for the foot soldier */
-	public static Image FOOT_SOLDIER;
-	/** The image for the archer */
-	public static Image ARCHER;
-	/** The image for the settler */
-	public static Image SETTLER;
 	/** The image for the blue nation */
 	public static Image BLUE_NATION;
 	/** The image for the red nation */
@@ -101,10 +95,6 @@ public class RPGView extends Application implements Observer {
 	 * Creates a new view with the appropriate images for each unit.
 	 */
 	public RPGView() {
-
-		FOOT_SOLDIER = new Image("/res/Infantry.png", 40, 40, false, false);
-		ARCHER = new Image("/res/Scout.png", 40, 40, false, false);
-		SETTLER = new Image("/res/Settler.png", 40, 40, false, false);
 		BLUE_NATION = new Image("/res/blue_nation_city.png", 40, 40, false, false);
 		RED_NATION = new Image("/res/red_nation_city.png", 40, 40, false, false);
 
@@ -116,9 +106,6 @@ public class RPGView extends Application implements Observer {
 		BLUE_SETTLER = new Image("/res/blue_settler.png", 40, 40, false, false);
 		RED_CITY = new Image("/res/red_city.png", 40, 40, false, false);
 		BLUE_CITY = new Image("/res/blue_city.png", 40, 40, false, false);
-//		FOOT_SOLDIER = new Image("/res/Infantry.png", 40, 40, false, false);
-//		ARCHER = new Image("/res/Scout.png", 40, 40, false, false);
-//		SETTLER = new Image("/res/Settler.png", 40, 40, false, false);
 
 	}
 

@@ -9,7 +9,7 @@ import view.RPGView;
  * @author Adi, Joesph, Shane, Dillion
  *
  */
-public class RPG {
+public class Society {
 
 	/**
 	 * Runs the game
