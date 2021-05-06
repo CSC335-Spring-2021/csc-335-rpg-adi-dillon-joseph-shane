@@ -13,6 +13,7 @@ import model.Tile;
  * This class is the test suite for our RPG game.
  * The class tests the controller and model classes as well as the 
  * various classes that are in the respective packages.
+ * 
  * @author Dillon, Joseph, Shane, Adi
  *
  */
@@ -31,7 +32,6 @@ public class TestSuite{
 	 * classes in the model including the model, nation, city and tile
 	 * classes. 
 	 * 
-	 * @author Dillon, Joseph, Shane, Adi
 	 */
 	@Test
 	void testModel() {
@@ -90,7 +90,6 @@ public class TestSuite{
 	 * in it. Mechanics tested include placing units, moving units, building cities,
 	 * attacking units and letting the AI run through a few turns.
 	 * 
-	 * @author Dillon, Joseph, Shane, Adi
 	 */
 	@Test
 	void testController() {
